@@ -18,7 +18,7 @@ export const MarketTypeList = [
 export type MarketType = typeof MarketTypeList[number];
 
 export interface MarketInfo {
-    name: number
+    name: string
     type: MarketType
     crossOrder: boolean
     sizeResolution: number

@@ -5,7 +5,7 @@ export declare type OrderType = typeof OrderTypeList[number];
 export declare const MarketTypeList: readonly ["spot", "future"];
 export declare type MarketType = typeof MarketTypeList[number];
 export interface MarketInfo {
-    name: number;
+    name: string;
     type: MarketType;
     crossOrder: boolean;
     sizeResolution: number;
