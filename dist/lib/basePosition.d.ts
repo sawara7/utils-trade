@@ -9,6 +9,10 @@ export declare class BasePositionClass {
     protected _cumulativeFee: number;
     protected _cumulativeProfit: number;
     private _orderLock;
+    onOpened?: (pos: BasePositionClass) => void;
+    onClosed?: (pos: BasePositionClass) => void;
+    onOpenOrderCanceled?: (pos: BasePositionClass) => void;
+    onCloseOrderCanceled?: (pos: BasePositionClass) => void;
     constructor(params: BasePositionParameters);
     private doOrder;
     open(): Promise<BasePositionResponse>;

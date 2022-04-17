@@ -13,6 +13,12 @@ export class BasePositionClass {
 
     private _orderLock: boolean = false
 
+    // Events
+    public onOpened?: (pos: BasePositionClass) => void
+    public onClosed?: (pos: BasePositionClass) => void
+    public onOpenOrderCanceled?: (pos: BasePositionClass) => void
+    public onCloseOrderCanceled?: (pos: BasePositionClass) => void
+
     constructor(params: BasePositionParameters){
     }
 
