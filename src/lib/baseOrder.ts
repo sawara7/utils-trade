@@ -59,11 +59,11 @@ export class BaseOrderClass {
         return this._postOnly
     }
 
-    protected roundSize(size: number): number {
+    public roundSize(size: number): number {
         return Math.round(size * (1/this.market.sizeResolution))/(1/this.market.sizeResolution)
     }
 
-    protected roundPrice(price: number): number {
+    public roundPrice(price: number): number {
         return Math.round(price * (1/this.market.priceResolution))/(1/this.market.priceResolution)
     }
 }

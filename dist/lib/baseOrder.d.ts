@@ -23,6 +23,6 @@ export declare class BaseOrderClass {
     get price(): number;
     get size(): number;
     get postOnly(): boolean;
-    protected roundSize(size: number): number;
-    protected roundPrice(price: number): number;
+    roundSize(size: number): number;
+    roundPrice(price: number): number;
 }
