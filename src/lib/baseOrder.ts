@@ -60,10 +60,15 @@ export class BaseOrderClass {
     }
 
     public roundSize(size: number): number {
-        return Math.round(size * (1/this.market.sizeResolution))/(1/this.market.sizeResolution)
+        return Math.floor(size * (1/this.market.sizeResolution))/(1/this.market.sizeResolution)
     }
 
     public roundPrice(price: number): number {
-        return Math.round(price * (1/this.market.priceResolution))/(1/this.market.priceResolution)
+        if (this._side === "buy") {
+            return Math.floor(price * (1/this.market.priceResolution))/(1/this.market.priceResolution)
+        } else {
+            return Math.round(price * (1/this.market.priceResolution))/(1/this.market.priceResolution)
+        }
+        
     }
 }
