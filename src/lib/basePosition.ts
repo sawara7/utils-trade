@@ -6,12 +6,15 @@ export interface BasePositionResponse {
     message?: string
 }
 
-export class BasePositionClass {
+export abstract class BasePositionClass {
     protected _closeCount: number = 0
     protected _cumulativeFee: number = 0
     protected _cumulativeProfit: number = 0
+    protected _unrealizedProfit: number = 0
 
     private _orderLock: boolean = false
+    private _bestBid: number = 0
+    private _bestAsk: number = 0
 
     // Events
     public onOpened?: (pos: BasePositionClass) => void
@@ -75,7 +78,27 @@ export class BasePositionClass {
         return this._cumulativeProfit - this._cumulativeFee
     }
 
+    get unrealizedProfit(): number {
+        return this._unrealizedProfit
+    }
+
     get closeCount(): number {
         return this._closeCount
+    }
+
+    get bestBid(): number {
+        return this._bestBid
+    }
+
+    set bestBid(value: number) {
+        this._bestBid = value
+    }
+
+    get bestAsk(): number {
+        return this._bestAsk
+    }
+    
+    set bestAsk(value: number) {
+        this._bestAsk = value
     }
 }

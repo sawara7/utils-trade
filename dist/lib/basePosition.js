@@ -15,7 +15,10 @@ class BasePositionClass {
         this._closeCount = 0;
         this._cumulativeFee = 0;
         this._cumulativeProfit = 0;
+        this._unrealizedProfit = 0;
         this._orderLock = false;
+        this._bestBid = 0;
+        this._bestAsk = 0;
     }
     doOrder(side) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -74,8 +77,23 @@ class BasePositionClass {
     get profit() {
         return this._cumulativeProfit - this._cumulativeFee;
     }
+    get unrealizedProfit() {
+        return this._unrealizedProfit;
+    }
     get closeCount() {
         return this._closeCount;
+    }
+    get bestBid() {
+        return this._bestBid;
+    }
+    set bestBid(value) {
+        this._bestBid = value;
+    }
+    get bestAsk() {
+        return this._bestAsk;
+    }
+    set bestAsk(value) {
+        this._bestAsk = value;
     }
 }
 exports.BasePositionClass = BasePositionClass;
