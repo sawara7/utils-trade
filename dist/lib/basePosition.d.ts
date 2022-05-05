@@ -1,4 +1,5 @@
 export interface BasePositionParameters {
+    backtestMode?: boolean;
 }
 export interface BasePositionResponse {
     success: boolean;
@@ -9,6 +10,7 @@ export declare abstract class BasePositionClass {
     protected _cumulativeFee: number;
     protected _cumulativeProfit: number;
     protected _unrealizedProfit: number;
+    protected _backtestMode: boolean;
     private _orderLock;
     private _bestBid;
     private _bestAsk;

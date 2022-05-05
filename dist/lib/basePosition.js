@@ -16,9 +16,11 @@ class BasePositionClass {
         this._cumulativeFee = 0;
         this._cumulativeProfit = 0;
         this._unrealizedProfit = 0;
+        this._backtestMode = false;
         this._orderLock = false;
         this._bestBid = 0;
         this._bestAsk = 0;
+        this._backtestMode = params.backtestMode ? params.backtestMode : false;
     }
     doOrder(side) {
         return __awaiter(this, void 0, void 0, function* () {
