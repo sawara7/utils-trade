@@ -1,4 +1,5 @@
 export interface BasePositionParameters {
+    backtestMode?: boolean
 }
 
 export interface BasePositionResponse {
@@ -11,6 +12,7 @@ export abstract class BasePositionClass {
     protected _cumulativeFee: number = 0
     protected _cumulativeProfit: number = 0
     protected _unrealizedProfit: number = 0
+    protected _backtestMode: boolean = false
 
     private _orderLock: boolean = false
     private _bestBid: number = 0
@@ -23,6 +25,7 @@ export abstract class BasePositionClass {
     public onCloseOrderCanceled?: (pos: BasePositionClass) => void
 
     constructor(params: BasePositionParameters){
+        this._backtestMode = params.backtestMode? params.backtestMode: false
     }
 
     private async doOrder(side: 'open' | 'close'): Promise<BasePositionResponse> {
