@@ -17,10 +17,60 @@ class BasePositionClass {
         this._cumulativeProfit = 0;
         this._unrealizedProfit = 0;
         this._backtestMode = false;
+        this._losscut = false;
+        this._losscutCount = 0;
         this._orderLock = false;
         this._bestBid = 0;
         this._bestAsk = 0;
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
+    }
+    open() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.doOrder('open');
+        });
+    }
+    close() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.doOrder('close');
+        });
+    }
+    losscut() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this._losscut) {
+                this._losscut = true;
+                yield this.doLosscut();
+            }
+        });
+    }
+    get enabledOpen() {
+        return !this._orderLock && !this._losscut;
+    }
+    get enabledClose() {
+        return !this._orderLock && !this._losscut;
+    }
+    get profit() {
+        return this._cumulativeProfit - this._cumulativeFee;
+    }
+    get unrealizedProfit() {
+        return this._unrealizedProfit;
+    }
+    get closeCount() {
+        return this._closeCount;
+    }
+    get losscutCount() {
+        return this._losscutCount;
+    }
+    get bestBid() {
+        return this._bestBid;
+    }
+    set bestBid(value) {
+        this._bestBid = value;
+    }
+    get bestAsk() {
+        return this._bestAsk;
+    }
+    set bestAsk(value) {
+        this._bestAsk = value;
     }
     doOrder(side) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -53,49 +103,6 @@ class BasePositionClass {
             }
             return res;
         });
-    }
-    open() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.doOrder('open');
-        });
-    }
-    doOpen() {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    close() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.doOrder('close');
-        });
-    }
-    doClose() {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
-    get enabledOpen() {
-        return !this._orderLock;
-    }
-    get enabledClose() {
-        return !this._orderLock;
-    }
-    get profit() {
-        return this._cumulativeProfit - this._cumulativeFee;
-    }
-    get unrealizedProfit() {
-        return this._unrealizedProfit;
-    }
-    get closeCount() {
-        return this._closeCount;
-    }
-    get bestBid() {
-        return this._bestBid;
-    }
-    set bestBid(value) {
-        this._bestBid = value;
-    }
-    get bestAsk() {
-        return this._bestAsk;
-    }
-    set bestAsk(value) {
-        this._bestAsk = value;
     }
 }
 exports.BasePositionClass = BasePositionClass;
