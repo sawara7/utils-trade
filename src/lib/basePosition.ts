@@ -1,3 +1,5 @@
+import { PositionStateClass } from "./positionState"
+
 export interface BasePositionParameters {
     backtestMode?: boolean
 }
@@ -8,13 +10,15 @@ export interface BasePositionResponse {
 }
 
 export abstract class BasePositionClass {
+    protected _backtestMode: boolean = false
+
     protected _closeCount: number = 0
     protected _cumulativeFee: number = 0
     protected _cumulativeProfit: number = 0
     protected _unrealizedProfit: number = 0
-    protected _backtestMode: boolean = false
-    protected _losscut: boolean = false
     protected _losscutCount: number = 0
+
+    protected _positionState: PositionStateClass
 
     private _orderLock: boolean = false
     private _bestBid: number = 0
@@ -29,6 +33,7 @@ export abstract class BasePositionClass {
     public onLosscutOrderCanceled?: (pos: BasePositionClass) => void
 
     constructor(params: BasePositionParameters){
+        this._positionState = new PositionStateClass()
         this._backtestMode = params.backtestMode? params.backtestMode: false
     }
 
@@ -45,21 +50,13 @@ export abstract class BasePositionClass {
     abstract doClose(): Promise<void>
 
     public async losscut(): Promise<void> {
-        if (!this._losscut) {
-            this._losscut = true
+        if (!this._positionState.enabledLosscut) {
+            this._positionState.setLosscut()
             await this.doLosscut()
         }
     }
 
     abstract doLosscut(): Promise<void>
-
-    get enabledOpen(): boolean {
-        return !this._orderLock && !this._losscut
-    }
-
-    get enabledClose(): boolean {
-        return !this._orderLock && !this._losscut
-    }
 
     get profit(): number {
         return this._cumulativeProfit - this._cumulativeFee
@@ -91,6 +88,10 @@ export abstract class BasePositionClass {
     
     set bestAsk(value: number) {
         this._bestAsk = value
+    }
+
+    get state(): PositionStateClass {
+        return this._positionState
     }
 
     private async doOrder(side: 'open' | 'close'): Promise<BasePositionResponse> {

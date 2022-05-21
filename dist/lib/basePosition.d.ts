@@ -1,3 +1,4 @@
+import { PositionStateClass } from "./positionState";
 export interface BasePositionParameters {
     backtestMode?: boolean;
 }
@@ -6,13 +7,13 @@ export interface BasePositionResponse {
     message?: string;
 }
 export declare abstract class BasePositionClass {
+    protected _backtestMode: boolean;
     protected _closeCount: number;
     protected _cumulativeFee: number;
     protected _cumulativeProfit: number;
     protected _unrealizedProfit: number;
-    protected _backtestMode: boolean;
-    protected _losscut: boolean;
     protected _losscutCount: number;
+    protected _positionState: PositionStateClass;
     private _orderLock;
     private _bestBid;
     private _bestAsk;
@@ -29,8 +30,6 @@ export declare abstract class BasePositionClass {
     abstract doClose(): Promise<void>;
     losscut(): Promise<void>;
     abstract doLosscut(): Promise<void>;
-    get enabledOpen(): boolean;
-    get enabledClose(): boolean;
     get profit(): number;
     get unrealizedProfit(): number;
     get closeCount(): number;
@@ -39,5 +38,6 @@ export declare abstract class BasePositionClass {
     set bestBid(value: number);
     get bestAsk(): number;
     set bestAsk(value: number);
+    get state(): PositionStateClass;
     private doOrder;
 }

@@ -10,18 +10,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasePositionClass = void 0;
+const positionState_1 = require("./positionState");
 class BasePositionClass {
     constructor(params) {
+        this._backtestMode = false;
         this._closeCount = 0;
         this._cumulativeFee = 0;
         this._cumulativeProfit = 0;
         this._unrealizedProfit = 0;
-        this._backtestMode = false;
-        this._losscut = false;
         this._losscutCount = 0;
         this._orderLock = false;
         this._bestBid = 0;
         this._bestAsk = 0;
+        this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
     }
     open() {
@@ -36,17 +37,11 @@ class BasePositionClass {
     }
     losscut() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this._losscut) {
-                this._losscut = true;
+            if (!this._positionState.enabledLosscut) {
+                this._positionState.setLosscut();
                 yield this.doLosscut();
             }
         });
-    }
-    get enabledOpen() {
-        return !this._orderLock && !this._losscut;
-    }
-    get enabledClose() {
-        return !this._orderLock && !this._losscut;
     }
     get profit() {
         return this._cumulativeProfit - this._cumulativeFee;
@@ -71,6 +66,9 @@ class BasePositionClass {
     }
     set bestAsk(value) {
         this._bestAsk = value;
+    }
+    get state() {
+        return this._positionState;
     }
     doOrder(side) {
         return __awaiter(this, void 0, void 0, function* () {
