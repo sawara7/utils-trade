@@ -8,13 +8,11 @@ export declare class PositionStateClass {
     private _orderState;
     private _canceling;
     private _orderID;
-    private validOrderID;
     setLosscut(): void;
     setBeforePlaceOrder(od: PositionOrder): void;
     setAfterPlaceOrder(id: string): void;
-    setCancelOrder(id: string): void;
-    setOrderClosed(id: string): void;
-    setOrderCanceled(id: string): void;
+    setCancelOrder(): void;
+    setOrderClosed(): void;
     get isLosscut(): boolean;
     get positionState(): PositionState;
     get orderState(): PositionOrder;
@@ -24,5 +22,6 @@ export declare class PositionStateClass {
     get enabledOpen(): boolean;
     get enabledClose(): boolean;
     get enabledLosscut(): boolean;
+    get enabledCancel(): boolean;
     reset(): void;
 }

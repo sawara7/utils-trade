@@ -11,4 +11,6 @@ export interface MarketInfo {
     sizeResolution: number;
     priceResolution: number;
     minOrderSize: number;
+    roundSize: (size: number) => number;
+    roundPrice: (size: number) => number;
 }

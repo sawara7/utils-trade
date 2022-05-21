@@ -20,10 +20,6 @@ export class PositionStateClass {
     private _canceling: boolean = false
     private _orderID: string | undefined
 
-    private validOrderID(id: string): boolean {
-        return this._orderID? this._orderID === id: false
-    }
-
     public setLosscut() {
         this._isLosscut = true
     }
@@ -39,40 +35,34 @@ export class PositionStateClass {
     }
 
     public setAfterPlaceOrder(id: string) {
+        if (this._orderID) {
+            throw new Error("set after place order error.")
+        }
         this._orderID = id
     }
 
-    public setCancelOrder(id: string) {
-        if (this.isNoOrder && !this.validOrderID(id)) {
+    public setCancelOrder() {
+        if (this.isNoOrder) {
             throw new Error("cancel order error.")
         }
         this._canceling = true
     }
 
-    public setOrderClosed(id: string) {
-        if (!this.isNoOrder && !this.validOrderID(id)) {
+    public setOrderClosed() {
+        if (!this.isNoOrder) {
             throw new Error("order closed error.")
         }
-        if (this._orderState === "open") {
+        if (this._canceling) {
+            this._canceling = false
+        } else if (this._orderState === "open") {
             this._positionState = "opened"
-        }
-        if (this._orderState === "close") {
+        } else if (this._orderState === "close") {
             this._positionState = "closed"
-        }
-        if (this._orderState === "losscut") {
+        } else if (this._orderState === "losscut") {
             this._positionState = "closed"
             this._isLosscut = false
         }
         this._orderState = "none"
-        this._orderID = undefined
-    }
-
-    public setOrderCanceled(id: string) {
-        if (this.isNoOrder && !this.validOrderID(id)) {
-            throw new Error("order canceled error.")
-        }
-        this._orderState = "none"
-        this._canceling = false
         this._orderID = undefined
     }
 
@@ -115,6 +105,11 @@ export class PositionStateClass {
     get enabledLosscut(): boolean {
         const c: PositionState[] = ["opened"]
         return c.includes(this.positionState) && !this.isLosscut
+    }
+
+    get enabledCancel(): boolean {
+        return this.orderState !== "none" &&
+        !this.orderCanceling
     }
     
     public reset() {
