@@ -12,7 +12,6 @@ export interface BaseOrderSettings {
     size: number
     price?: number
     postOnly?: boolean
-    cancelSec?: number
 }
 
 export class BaseOrderClass {

@@ -7,7 +7,6 @@ export interface BaseOrderSettings {
     size: number;
     price?: number;
     postOnly?: boolean;
-    cancelSec?: number;
 }
 export declare class BaseOrderClass {
     private _market;

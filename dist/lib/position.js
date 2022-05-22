@@ -44,7 +44,6 @@ class BasePositionClass {
                 this.state.setBeforePlaceOrder("open");
                 const id = yield this.doOpen();
                 this.state.setAfterPlaceOrder(id);
-                console.log(this.state.orderID);
             }));
         });
     }
