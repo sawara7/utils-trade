@@ -68,6 +68,15 @@ export class PositionStateClass {
         this._orderID = undefined
     }
 
+    public setOrderFailed() {
+        this._orderState = "none"
+        this._orderID = undefined
+    }
+
+    public setOrderCancelFailed() {
+        this._canceling = false
+    }
+
     get isLosscut(): boolean {
         return this._isLosscut
     }
@@ -104,7 +113,7 @@ export class PositionStateClass {
 
     get enabledLosscut(): boolean {
         const c: PositionState[] = ["opened"]
-        return c.includes(this.positionState) && !this.isLosscut && this.isNoOrder
+        return c.includes(this.positionState) && !this.isLosscut
     }
 
     get enabledCancel(): boolean {

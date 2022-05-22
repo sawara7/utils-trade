@@ -62,11 +62,11 @@ export declare abstract class BasePositionClass {
     private _checkCloseCancel?;
     private _checkLosscut?;
     constructor(params: BasePositionParameters);
-    open(): Promise<BasePositionResponse>;
+    open(): Promise<void>;
     abstract doOpen(): Promise<string>;
-    close(): Promise<BasePositionResponse>;
+    close(): Promise<void>;
     abstract doClose(): Promise<string>;
-    cancel(): Promise<BasePositionResponse>;
+    cancel(): Promise<void>;
     abstract doCancel(): Promise<void>;
     losscut(): Promise<void>;
     abstract doLosscut(): Promise<void>;

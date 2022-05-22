@@ -13,6 +13,8 @@ export declare class PositionStateClass {
     setAfterPlaceOrder(id: string): void;
     setCancelOrder(): void;
     setOrderClosed(): void;
+    setOrderFailed(): void;
+    setOrderCancelFailed(): void;
     get isLosscut(): boolean;
     get positionState(): PositionState;
     get orderState(): PositionOrder;

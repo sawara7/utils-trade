@@ -40,28 +40,40 @@ class BasePositionClass {
     }
     open() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
-                this.state.setBeforePlaceOrder("open");
+            this.state.setBeforePlaceOrder("open");
+            const res = yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
                 const id = yield this.doOpen();
                 this.state.setAfterPlaceOrder(id);
             }));
+            if (!res.success) {
+                console.log("[open error]" + res.message);
+                this.state.setOrderFailed();
+            }
         });
     }
     close() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.state.setBeforePlaceOrder("close");
-            return yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
+            this.state.setBeforePlaceOrder(this.state.isLosscut ? "losscut" : "close");
+            const res = yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
                 const id = yield this.doClose();
                 this.state.setAfterPlaceOrder(id);
             }));
+            if (!res.success) {
+                console.log("[closer error]" + res.message);
+                this.state.setOrderFailed();
+            }
         });
     }
     cancel() {
         return __awaiter(this, void 0, void 0, function* () {
             this._positionState.setCancelOrder();
-            return yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
+            const res = yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
                 yield this.doCancel();
             }));
+            if (!res.success) {
+                console.log("[cancel error]" + res.message);
+                this.state.setOrderCancelFailed();
+            }
         });
     }
     losscut() {
@@ -119,6 +131,9 @@ class BasePositionClass {
             }
             if (this.state.orderState === "close") {
                 this.state.setOrderClosed();
+                if (this.state.isLosscut) {
+                    this.close();
+                }
                 if (this.onCloseOrderCanceled) {
                     this.onCloseOrderCanceled(this);
                 }

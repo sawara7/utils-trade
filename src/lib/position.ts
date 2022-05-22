@@ -91,31 +91,43 @@ export abstract class BasePositionClass {
         this._checkLosscut = params.checkLosscut
     }
 
-    public async open(): Promise<BasePositionResponse> {
-        return await this.lock(async()=>{
-            this.state.setBeforePlaceOrder("open")
+    public async open(): Promise<void> {
+        this.state.setBeforePlaceOrder("open")
+        const res = await this.lock(async()=>{
             const id = await this.doOpen()
             this.state.setAfterPlaceOrder(id)
         })
+        if (!res.success) {
+            console.log("[open error]" + res.message)
+            this.state.setOrderFailed()
+        }
     }
 
     abstract doOpen(): Promise<string>
 
-    public async close(): Promise<BasePositionResponse> {
-        this.state.setBeforePlaceOrder("close")
-        return await this.lock(async()=>{
+    public async close(): Promise<void> {
+        this.state.setBeforePlaceOrder(this.state.isLosscut? "losscut": "close")
+        const res = await this.lock(async()=>{
             const id = await this.doClose()
             this.state.setAfterPlaceOrder(id)
         })
+        if (!res.success) {
+            console.log("[closer error]" + res.message)
+            this.state.setOrderFailed()
+        }
     }
 
     abstract doClose(): Promise<string>
 
-    public async cancel(): Promise<BasePositionResponse> {
+    public async cancel(): Promise<void> {
         this._positionState.setCancelOrder()
-        return await this.lock(async()=>{
+        const res = await this.lock(async()=>{
             await this.doCancel()
         })
+        if (!res.success) {
+            console.log("[cancel error]" + res.message)
+            this.state.setOrderCancelFailed()
+        }
     }
 
     abstract doCancel(): Promise<void>
@@ -172,6 +184,9 @@ export abstract class BasePositionClass {
             }
             if (this.state.orderState === "close") {
                 this.state.setOrderClosed()
+                if (this.state.isLosscut) {
+                    this.close()
+                }
                 if (this.onCloseOrderCanceled){
                     this.onCloseOrderCanceled(this)
                 }
