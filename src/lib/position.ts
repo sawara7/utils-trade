@@ -114,6 +114,7 @@ export abstract class BasePositionClass {
 
     public async cancel(): Promise<BasePositionResponse> {
         return await this.lock(async()=>{
+            this._positionState.setCancelOrder()
             await this.doCancel()
         })
     }
@@ -262,6 +263,14 @@ export abstract class BasePositionClass {
 
     get currentSize(): number {
         return this._currentSize
+    }
+
+    get openOrder(): BaseOrderClass {
+        return this._openOrder
+    }
+
+    get closeOrder(): BaseOrderClass {
+        return this._closeOrder
     }
 
     private async lock(cb: ()=>Promise<void>): Promise<BasePositionResponse> {

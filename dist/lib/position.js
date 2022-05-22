@@ -19,6 +19,7 @@ class BasePositionClass {
         this._cumulativeProfit = 0;
         this._unrealizedProfit = 0;
         this._losscutCount = 0;
+        // Position
         this._initialSize = 0;
         this._currentSize = 0;
         this._openPrice = 0;
@@ -28,8 +29,14 @@ class BasePositionClass {
         this._bestAsk = 0;
         this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
-        this._marketInfo = params.marketInfo;
-        this._openSide = params.openSide;
+        this._openOrder = params.openOrder;
+        this._closeOrder = params.closeOrder;
+        this._openSide = params.openOrder.side;
+        this._checkOpen = params.checkOpen;
+        this._checkClose = params.checkClose;
+        this._checkCloseCancel = params.checkCloseCancel;
+        this._checkOpenCancel = params.checkOpenCancel;
+        this._checkLosscut = params.checkLosscut;
     }
     open() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -37,6 +44,7 @@ class BasePositionClass {
                 this.state.setBeforePlaceOrder("open");
                 const id = yield this.doOpen();
                 this.state.setAfterPlaceOrder(id);
+                console.log(this.state.orderID);
             }));
         });
     }
@@ -52,6 +60,7 @@ class BasePositionClass {
     cancel() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
+                this._positionState.setCancelOrder();
                 yield this.doCancel();
             }));
         });
@@ -67,17 +76,17 @@ class BasePositionClass {
     updateTicker(ticker) {
         this.bestAsk = ticker.ask;
         this.bestBid = ticker.bid;
-        if (this.state.enabledCancel && ((this.checkOpenCancel && this.checkOpenCancel(this)) ||
-            (this.checkCloseCancel && this.checkCloseCancel(this)))) {
+        if (this.state.enabledCancel && ((this._checkOpenCancel && this._checkOpenCancel(this)) ||
+            (this._checkCloseCancel && this._checkCloseCancel(this)))) {
             this.cancel();
         }
-        else if (this.state.enabledLosscut && this.checkLosscut && this.checkLosscut(this)) {
+        else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
             this.losscut();
         }
-        else if (this.state.enabledOpen && this.checkOpen && this.checkOpen(this)) {
+        else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
             this.open();
         }
-        else if (this.state.enabledClose && this.checkClose && this.checkClose(this)) {
+        else if (this.state.enabledClose && this._checkClose && this._checkClose(this)) {
             this.close();
         }
     }
@@ -88,17 +97,17 @@ class BasePositionClass {
         if (order.orderID !== this.state.orderID) {
             return;
         }
-        const size = this._marketInfo.roundSize(order.size);
-        const filled = this._marketInfo.roundSize(order.filledSize);
+        const size = this.state.orderState === "open" ? this._openOrder.roundSize(order.size) : this._closeOrder.roundSize(order.size);
+        const filled = this.state.orderState === "open" ? this._openOrder.roundSize(order.filledSize) : this._closeOrder.roundSize(order.filledSize);
         if (filled > 0) {
             if (this.state.orderState === "open") {
                 this._currentSize = filled;
                 this._initialSize = filled;
-                this._openPrice = this._marketInfo.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
+                this._openPrice = this._openOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
             }
             if (this.state.orderState === "close") {
-                this._currentSize = this._marketInfo.roundSize(this._currentSize - filled);
-                this._closePrice = this._marketInfo.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
+                this._currentSize = this._closeOrder.roundSize(this._currentSize - filled);
+                this._closePrice = this._closeOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
             }
         }
         if (filled !== size) {
@@ -107,12 +116,14 @@ class BasePositionClass {
                 if (this.onOpenOrderCanceled) {
                     this.onOpenOrderCanceled(this);
                 }
+                return;
             }
             if (this.state.orderState === "close") {
                 this.state.setOrderClosed();
                 if (this.onCloseOrderCanceled) {
                     this.onCloseOrderCanceled(this);
                 }
+                return;
             }
         }
         if (filled === size) {
@@ -121,6 +132,7 @@ class BasePositionClass {
                 if (this.onOpened) {
                     this.onOpened(this);
                 }
+                return;
             }
             if (["losscut", "close"].includes(this.state.orderState)) {
                 if (this.state.isLosscut) {
@@ -136,6 +148,7 @@ class BasePositionClass {
                 if (this.onClosed) {
                     this.onClosed(this);
                 }
+                return;
             }
         }
     }
@@ -183,6 +196,12 @@ class BasePositionClass {
     }
     get currentSize() {
         return this._currentSize;
+    }
+    get openOrder() {
+        return this._openOrder;
+    }
+    get closeOrder() {
+        return this._closeOrder;
     }
     lock(cb) {
         return __awaiter(this, void 0, void 0, function* () {

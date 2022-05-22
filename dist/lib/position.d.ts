@@ -1,4 +1,4 @@
-import { MarketInfo, OrderSide, OrderType } from "..";
+import { BaseOrderClass } from "..";
 import { PositionStateClass } from "./positionState";
 export interface Ticker {
     time: string;
@@ -20,13 +20,14 @@ export interface Order {
 }
 export interface BasePositionParameters {
     backtestMode?: boolean;
-    marketInfo: MarketInfo;
-    openSide: OrderSide;
-    orderType: OrderType;
-    funds: number;
-    openPrice: number;
-    closePrice: number;
     losscutPrice?: number;
+    openOrder: BaseOrderClass;
+    closeOrder: BaseOrderClass;
+    checkOpen: (pos: BasePositionClass) => boolean;
+    checkClose: (pos: BasePositionClass) => boolean;
+    checkOpenCancel?: (pos: BasePositionClass) => boolean;
+    checkCloseCancel?: (pos: BasePositionClass) => boolean;
+    checkLosscut?: (pos: BasePositionClass) => boolean;
 }
 export interface BasePositionResponse {
     success: boolean;
@@ -39,13 +40,14 @@ export declare abstract class BasePositionClass {
     protected _cumulativeProfit: number;
     protected _unrealizedProfit: number;
     protected _losscutCount: number;
-    private _marketInfo;
-    private _openSide;
     private _initialSize;
     private _currentSize;
+    private _losscutPrice?;
+    private _openSide;
     private _openPrice;
     private _closePrice;
-    private _losscutPrice?;
+    private _openOrder;
+    private _closeOrder;
     protected _positionState: PositionStateClass;
     private _orderLock;
     private _bestBid;
@@ -54,11 +56,11 @@ export declare abstract class BasePositionClass {
     onClosed?: (pos: BasePositionClass) => void;
     onOpenOrderCanceled?: (pos: BasePositionClass) => void;
     onCloseOrderCanceled?: (pos: BasePositionClass) => void;
-    checkOpen?: (pos: BasePositionClass) => boolean;
-    checkClose?: (pos: BasePositionClass) => boolean;
-    checkOpenCancel?: (pos: BasePositionClass) => boolean;
-    checkCloseCancel?: (pos: BasePositionClass) => boolean;
-    checkLosscut?: (pos: BasePositionClass) => boolean;
+    private _checkOpen?;
+    private _checkClose?;
+    private _checkOpenCancel?;
+    private _checkCloseCancel?;
+    private _checkLosscut?;
     constructor(params: BasePositionParameters);
     open(): Promise<BasePositionResponse>;
     abstract doOpen(): Promise<string>;
@@ -83,5 +85,7 @@ export declare abstract class BasePositionClass {
     get currentOpenPrice(): number;
     get currentClosePrice(): number;
     get currentSize(): number;
+    get openOrder(): BaseOrderClass;
+    get closeOrder(): BaseOrderClass;
     private lock;
 }
