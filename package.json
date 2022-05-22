@@ -8,12 +8,24 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest"
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "useESM": true
+      }
+    },
+    "preset": "ts-jest/presets/default-esm"
   },
   "author": "sawara",
-  "license": "ISC",
+  "license": "MIT",
   "bundleDependencies": false,
   "devDependencies": {
-    "typescript": "^4.3.5"
+    "@types/jest": "^27.5.1",
+    "jest": "^28.1.0",
+    "ts-jest": "^28.0.2",
+    "typescript": "^4.6.4"
   }
 }

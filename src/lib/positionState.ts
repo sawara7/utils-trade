@@ -26,9 +26,11 @@ export class PositionStateClass {
 
     public setBeforePlaceOrder(od: PositionOrder) {
         if (this.enabledOpen && od === "open") {
-            this._orderState = od
+            this._orderState = "open"
         } else if (this.enabledClose && od === "close") {
-            this._orderState = od
+            this._orderState = "close"
+        } else if (this.enabledClose && od === "losscut" && this.isLosscut) {
+            this._orderState = "losscut"
         } else {
             throw new Error("place order error.")
         }
@@ -49,7 +51,7 @@ export class PositionStateClass {
     }
 
     public setOrderClosed() {
-        if (!this.isNoOrder) {
+        if (this.isNoOrder) {
             throw new Error("order closed error.")
         }
         if (this._canceling) {
@@ -87,9 +89,7 @@ export class PositionStateClass {
     }
 
     get isNoOrder(): boolean {
-        return !this.orderID &&
-            this.orderState === "none" &&
-            !this.orderCanceling
+        return !this.orderID && this.orderState === "none" && !this.orderCanceling
     }
 
     get enabledOpen(): boolean {
@@ -104,11 +104,12 @@ export class PositionStateClass {
 
     get enabledLosscut(): boolean {
         const c: PositionState[] = ["opened"]
-        return c.includes(this.positionState) && !this.isLosscut
+        return c.includes(this.positionState) && !this.isLosscut && this.isNoOrder
     }
 
     get enabledCancel(): boolean {
         return this.orderState !== "none" &&
+        !!this.orderID &&
         !this.orderCanceling
     }
     

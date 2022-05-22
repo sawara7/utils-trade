@@ -69,6 +69,5 @@ export class BaseOrderClass {
         } else {
             return Math.round(price * (1/this.market.priceResolution))/(1/this.market.priceResolution)
         }
-        
     }
 }

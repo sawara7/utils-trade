@@ -1,4 +1,4 @@
-import { MarketInfo, OrderSide, OrderType } from ".."
+import { BaseOrderClass, MarketInfo, OrderSide, OrderType } from ".."
 import { PositionStateClass } from "./positionState"
 
 export interface Ticker {
@@ -23,13 +23,14 @@ export interface Order {
 
 export interface BasePositionParameters {
     backtestMode?: boolean
-    marketInfo: MarketInfo
-    openSide: OrderSide
-    orderType: OrderType
-    funds: number
-    openPrice: number
-    closePrice: number
     losscutPrice?: number
+    openOrder: BaseOrderClass
+    closeOrder: BaseOrderClass
+    checkOpen: (pos: BasePositionClass) => boolean
+    checkClose: (pos: BasePositionClass) => boolean
+    checkOpenCancel?: (pos: BasePositionClass) => boolean
+    checkCloseCancel?: (pos: BasePositionClass) => boolean
+    checkLosscut?: (pos: BasePositionClass) => boolean
 }
 
 export interface BasePositionResponse {
@@ -47,13 +48,16 @@ export abstract class BasePositionClass {
     protected _losscutCount: number = 0
 
     // Position
-    private _marketInfo: MarketInfo
-    private _openSide: OrderSide
     private _initialSize: number = 0
     private _currentSize: number = 0
+    private _losscutPrice?: number
+    private _openSide: OrderSide
     private _openPrice: number = 0
     private _closePrice: number = 0
-    private _losscutPrice?: number
+
+    // Order
+    private _openOrder: BaseOrderClass
+    private _closeOrder: BaseOrderClass
 
     protected _positionState: PositionStateClass
 
@@ -68,17 +72,23 @@ export abstract class BasePositionClass {
     public onCloseOrderCanceled?: (pos: BasePositionClass) => void
 
     // Conditions
-    public checkOpen?: (pos: BasePositionClass) => boolean
-    public checkClose?: (pos: BasePositionClass) => boolean
-    public checkOpenCancel?: (pos: BasePositionClass) => boolean
-    public checkCloseCancel?: (pos: BasePositionClass) => boolean
-    public checkLosscut?: (pos: BasePositionClass) => boolean
+    private _checkOpen?: (pos: BasePositionClass) => boolean
+    private _checkClose?: (pos: BasePositionClass) => boolean
+    private _checkOpenCancel?: (pos: BasePositionClass) => boolean
+    private _checkCloseCancel?: (pos: BasePositionClass) => boolean
+    private _checkLosscut?: (pos: BasePositionClass) => boolean
 
     constructor(params: BasePositionParameters){
         this._positionState = new PositionStateClass()
         this._backtestMode = params.backtestMode? params.backtestMode: false
-        this._marketInfo = params.marketInfo
-        this._openSide = params.openSide
+        this._openOrder = params.openOrder
+        this._closeOrder = params.closeOrder
+        this._openSide = params.openOrder.side
+        this._checkOpen = params.checkOpen
+        this._checkClose = params.checkClose
+        this._checkCloseCancel = params.checkCloseCancel
+        this._checkOpenCancel = params.checkOpenCancel
+        this._checkLosscut = params.checkLosscut
     }
 
     public async open(): Promise<BasePositionResponse> {
@@ -86,6 +96,7 @@ export abstract class BasePositionClass {
             this.state.setBeforePlaceOrder("open")
             const id = await this.doOpen()
             this.state.setAfterPlaceOrder(id)
+            console.log(this.state.orderID)
         })
     }
 
@@ -122,15 +133,15 @@ export abstract class BasePositionClass {
         this.bestAsk = ticker.ask
         this.bestBid = ticker.bid
         if (this.state.enabledCancel && (
-            (this.checkOpenCancel && this.checkOpenCancel(this)) ||
-            (this.checkCloseCancel && this.checkCloseCancel(this))
+            (this._checkOpenCancel && this._checkOpenCancel(this)) ||
+            (this._checkCloseCancel && this._checkCloseCancel(this))
         )){
             this.cancel()
-        } else if (this.state.enabledLosscut && this.checkLosscut && this.checkLosscut(this)){
+        } else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)){
             this.losscut()
-        } else if (this.state.enabledOpen && this.checkOpen && this.checkOpen(this)) {
+        } else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
             this.open()
-        } else if (this.state.enabledClose && this.checkClose && this.checkClose(this)) {
+        } else if (this.state.enabledClose && this._checkClose && this._checkClose(this)) {
             this.close()
         }
     }
@@ -138,17 +149,17 @@ export abstract class BasePositionClass {
     public updateOrder(order: Order) {
         if (order.status !== 'closed') { return }
         if (order.orderID !== this.state.orderID) { return }
-        const size = this._marketInfo.roundSize(order.size)
-        const filled = this._marketInfo.roundSize(order.filledSize)
+        const size = this.state.orderState === "open"? this._openOrder.roundSize(order.size): this._closeOrder.roundSize(order.size)
+        const filled = this.state.orderState === "open"? this._openOrder.roundSize(order.filledSize): this._closeOrder.roundSize(order.filledSize)
         if (filled > 0) {
             if (this.state.orderState === "open") {
                 this._currentSize = filled
                 this._initialSize = filled
-                this._openPrice = this._marketInfo.roundPrice(order.avgFillPrice? order.avgFillPrice: order.price)
+                this._openPrice = this._openOrder.roundPrice(order.avgFillPrice? order.avgFillPrice: order.price)
             }
             if (this.state.orderState === "close") {
-                this._currentSize = this._marketInfo.roundSize(this._currentSize - filled)
-                this._closePrice = this._marketInfo.roundPrice(order.avgFillPrice? order.avgFillPrice: order.price)
+                this._currentSize = this._closeOrder.roundSize(this._currentSize - filled)
+                this._closePrice = this._closeOrder.roundPrice(order.avgFillPrice? order.avgFillPrice: order.price)
             }
         }
         if (filled !== size) {
@@ -157,12 +168,14 @@ export abstract class BasePositionClass {
                 if (this.onOpenOrderCanceled) {
                     this.onOpenOrderCanceled(this)
                 }
+                return
             }
             if (this.state.orderState === "close") {
                 this.state.setOrderClosed()
                 if (this.onCloseOrderCanceled){
                     this.onCloseOrderCanceled(this)
                 }
+                return
             }
         }
         if (filled === size) {
@@ -171,6 +184,7 @@ export abstract class BasePositionClass {
                 if (this.onOpened){
                     this.onOpened(this)
                 }
+                return
             }
 
             if (["losscut", "close"].includes(this.state.orderState)) {
@@ -187,6 +201,7 @@ export abstract class BasePositionClass {
                 if (this.onClosed){
                     this.onClosed(this)
                 }
+                return
             }
         }
     }
