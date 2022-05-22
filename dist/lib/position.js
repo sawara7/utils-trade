@@ -50,8 +50,8 @@ class BasePositionClass {
     }
     close() {
         return __awaiter(this, void 0, void 0, function* () {
+            this.state.setBeforePlaceOrder("close");
             return yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
-                this.state.setBeforePlaceOrder("close");
                 const id = yield this.doClose();
                 this.state.setAfterPlaceOrder(id);
             }));
@@ -59,16 +59,16 @@ class BasePositionClass {
     }
     cancel() {
         return __awaiter(this, void 0, void 0, function* () {
+            this._positionState.setCancelOrder();
             return yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
-                this._positionState.setCancelOrder();
                 yield this.doCancel();
             }));
         });
     }
     losscut() {
         return __awaiter(this, void 0, void 0, function* () {
+            this._positionState.setLosscut();
             if (!this._positionState.enabledLosscut) {
-                this._positionState.setLosscut();
                 yield this.doLosscut();
             }
         });

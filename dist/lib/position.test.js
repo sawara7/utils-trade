@@ -14,17 +14,23 @@ const __1 = require("..");
 class TestPositionClass extends __1.BasePositionClass {
     doOpen() {
         return __awaiter(this, void 0, void 0, function* () {
-            return "id1";
+            return "open1";
         });
     }
     doClose() {
-        throw new Error("Method not implemented.");
+        return __awaiter(this, void 0, void 0, function* () {
+            return "close1";
+        });
     }
     doCancel() {
-        throw new Error("Method not implemented.");
+        return __awaiter(this, void 0, void 0, function* () {
+            //
+        });
     }
     doLosscut() {
-        throw new Error("Method not implemented.");
+        return __awaiter(this, void 0, void 0, function* () {
+            //
+        });
     }
 }
 exports.TestPositionClass = TestPositionClass;
@@ -106,9 +112,9 @@ test('Open PositionClass', () => __awaiter(void 0, void 0, void 0, function* () 
     expect(pos.state.enabledOpen).toBe(false);
     expect(pos.state.orderState).toBe("open");
     expect(pos.state.enabledCancel).toBe(true);
-    expect(pos.state.orderID).toBe("id1");
+    expect(pos.state.orderID).toBe("open1");
     yield pos.updateOrder({
-        orderID: "id1",
+        orderID: "open1",
         market: "BCH-PERP",
         type: "limit",
         side: "buy",
@@ -125,4 +131,200 @@ test('Open PositionClass', () => __awaiter(void 0, void 0, void 0, function* () 
     expect(pos.state.orderID).toBe(undefined);
     expect(pos.currentOpenPrice).toBe(100);
     expect(pos.currentSize).toBe(1);
+}));
+test('Close PositionClass', () => __awaiter(void 0, void 0, void 0, function* () {
+    const checkOpen = (pos) => {
+        return true;
+    };
+    const checkClose = (pos) => {
+        return true;
+    };
+    const pos = new TestPositionClass({
+        openOrder: openOrder,
+        closeOrder: closeOrder,
+        checkOpen: checkOpen,
+        checkClose: checkClose
+    });
+    yield pos.updateTicker({
+        time: Date.now().toString(),
+        bid: 100.0,
+        ask: 101.0
+    });
+    yield pos.updateOrder({
+        orderID: "open1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "buy",
+        size: 1,
+        price: 100,
+        status: "closed",
+        filledSize: 1,
+        remainingSize: 0,
+        avgFillPrice: 100
+    });
+    yield pos.updateTicker({
+        time: Date.now().toString(),
+        bid: 100.0,
+        ask: 101.0
+    });
+    yield pos.updateOrder({
+        orderID: "close1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "buy",
+        size: 1,
+        price: 101,
+        status: "closed",
+        filledSize: 0.999999999999999999999,
+        remainingSize: 0,
+        avgFillPrice: 101
+    });
+    expect(pos.closeCount).toBe(1);
+    expect(pos.state.isNoOrder).toBe(true);
+    expect(pos.profit).toBe(1);
+}));
+test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* () {
+    const checkOpen = (pos) => {
+        return true;
+    };
+    const checkClose = (pos) => {
+        return true;
+    };
+    const pos = new TestPositionClass({
+        openOrder: openOrder,
+        closeOrder: closeOrder,
+        checkOpen: checkOpen,
+        checkClose: checkClose
+    });
+    yield pos.updateTicker({
+        time: Date.now().toString(),
+        bid: 100.0,
+        ask: 101.0
+    });
+    yield pos.cancel();
+    yield pos.updateOrder({
+        orderID: "open1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "buy",
+        size: 1,
+        price: 100,
+        status: "closed",
+        filledSize: 0,
+        remainingSize: 1,
+        avgFillPrice: 0
+    });
+    expect(pos.closeCount).toBe(0);
+    expect(pos.state.isNoOrder).toBe(true);
+    expect(pos.state.positionState).toBe("neutral");
+    yield pos.updateTicker({
+        time: Date.now().toString(),
+        bid: 100.0,
+        ask: 101.0
+    });
+    expect(pos.state.isNoOrder).toBe(false);
+    yield pos.updateOrder({
+        orderID: "open1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "buy",
+        size: 1,
+        price: 100,
+        status: "closed",
+        filledSize: 1,
+        remainingSize: 0,
+        avgFillPrice: 100
+    });
+    expect(pos.state.isNoOrder).toBe(true);
+    expect(pos.state.positionState).toBe("opened");
+    expect(pos.currentSize).toBe(1);
+    expect(pos.currentOpenPrice).toBe(100);
+    yield pos.updateTicker({
+        time: Date.now().toString(),
+        bid: 100.0,
+        ask: 101.0
+    });
+    yield pos.cancel();
+    yield pos.updateOrder({
+        orderID: "close1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "sell",
+        size: 1,
+        price: 100,
+        status: "closed",
+        filledSize: 0,
+        remainingSize: 1,
+        avgFillPrice: 0
+    });
+    yield pos.updateTicker({
+        time: Date.now().toString(),
+        bid: 100.0,
+        ask: 101.0
+    });
+    expect(pos.state.isNoOrder).toBe(false);
+    yield pos.updateOrder({
+        orderID: "close1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "sell",
+        size: 1,
+        price: 101,
+        status: "closed",
+        filledSize: 1,
+        remainingSize: 0,
+        avgFillPrice: 101
+    });
+    expect(pos.closeCount).toBe(1);
+    expect(pos.state.isNoOrder).toBe(true);
+    expect(pos.state.positionState).toBe("closed");
+    expect(pos.profit).toBe(1);
+}));
+test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* () {
+    const checkOpen = (pos) => {
+        return true;
+    };
+    const checkClose = (pos) => {
+        return true;
+    };
+    const pos = new TestPositionClass({
+        openOrder: openOrder,
+        closeOrder: closeOrder,
+        checkOpen: checkOpen,
+        checkClose: checkClose
+    });
+    yield pos.updateTicker({
+        time: Date.now().toString(),
+        bid: 100.0,
+        ask: 101.0
+    });
+    yield pos.updateOrder({
+        orderID: "open1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "buy",
+        size: 1,
+        price: 100,
+        status: "closed",
+        filledSize: 1,
+        remainingSize: 0,
+        avgFillPrice: 100
+    });
+    yield pos.losscut();
+    yield pos.updateOrder({
+        orderID: "close1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "sell",
+        size: 1,
+        price: 101,
+        status: "closed",
+        filledSize: 1,
+        remainingSize: 0,
+        avgFillPrice: 101
+    });
+    expect(pos.closeCount).toBe(1);
+    expect(pos.state.isNoOrder).toBe(true);
+    expect(pos.state.positionState).toBe("closed");
+    expect(pos.profit).toBe(1);
 }));

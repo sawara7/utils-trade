@@ -13,7 +13,7 @@ export interface Order {
     side: string;
     size: number;
     price: number;
-    status: string;
+    status: "closed" | string;
     filledSize: number;
     remainingSize: number;
     avgFillPrice: number;

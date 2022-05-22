@@ -1,4 +1,4 @@
-import { BaseOrderClass, MarketInfo, OrderSide, OrderType } from ".."
+import { BaseOrderClass, OrderSide } from ".."
 import { PositionStateClass } from "./positionState"
 
 export interface Ticker {
@@ -15,7 +15,7 @@ export interface Order {
     side: string
     size: number
     price: number
-    status: string
+    status: "closed" | string
     filledSize: number
     remainingSize: number
     avgFillPrice: number
@@ -103,8 +103,8 @@ export abstract class BasePositionClass {
     abstract doOpen(): Promise<string>
 
     public async close(): Promise<BasePositionResponse> {
+        this.state.setBeforePlaceOrder("close")
         return await this.lock(async()=>{
-            this.state.setBeforePlaceOrder("close")
             const id = await this.doClose()
             this.state.setAfterPlaceOrder(id)
         })
@@ -113,8 +113,8 @@ export abstract class BasePositionClass {
     abstract doClose(): Promise<string>
 
     public async cancel(): Promise<BasePositionResponse> {
+        this._positionState.setCancelOrder()
         return await this.lock(async()=>{
-            this._positionState.setCancelOrder()
             await this.doCancel()
         })
     }
@@ -122,8 +122,8 @@ export abstract class BasePositionClass {
     abstract doCancel(): Promise<void>
 
     public async losscut(): Promise<void> {
+        this._positionState.setLosscut()
         if (!this._positionState.enabledLosscut) {
-            this._positionState.setLosscut()
             await this.doLosscut()
         }
     }
