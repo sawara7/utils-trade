@@ -69,7 +69,6 @@ export declare abstract class BasePositionClass {
     cancel(): Promise<void>;
     abstract doCancel(): Promise<void>;
     losscut(): Promise<void>;
-    abstract doLosscut(): Promise<void>;
     updateTicker(ticker: Ticker): void;
     updateOrder(order: Order): void;
     get profit(): number;

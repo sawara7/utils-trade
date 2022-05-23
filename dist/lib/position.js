@@ -78,9 +78,14 @@ class BasePositionClass {
     }
     losscut() {
         return __awaiter(this, void 0, void 0, function* () {
-            this._positionState.setLosscut();
-            if (!this._positionState.enabledLosscut) {
-                yield this.doLosscut();
+            if (this._positionState.enabledLosscut) {
+                this._positionState.setLosscut();
+                if (this.state.isNoOrder) {
+                    yield this.close();
+                }
+                else {
+                    yield this.cancel();
+                }
             }
         });
     }
@@ -116,21 +121,24 @@ class BasePositionClass {
                 this._initialSize = filled;
                 this._openPrice = this._openOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
             }
-            if (this.state.orderState === "close") {
+            if (["close", "losscut"].includes(this.state.orderState)) {
                 this._currentSize = this._closeOrder.roundSize(this._currentSize - filled);
                 this._closePrice = this._closeOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
             }
         }
         if (filled !== size) {
             if (this.state.orderState === "open") {
-                this.state.setOrderClosed();
+                this.state.setOrderCanceled();
                 if (this.onOpenOrderCanceled) {
                     this.onOpenOrderCanceled(this);
                 }
                 return;
             }
+            if (this.state.orderState === "losscut") {
+                return;
+            }
             if (this.state.orderState === "close") {
-                this.state.setOrderClosed();
+                this.state.setOrderCanceled();
                 if (this.state.isLosscut) {
                     this.close();
                 }

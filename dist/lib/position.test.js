@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestPositionClass = void 0;
 const __1 = require("..");
+const my_utils_1 = require("my-utils");
 class TestPositionClass extends __1.BasePositionClass {
     doOpen() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,11 +24,6 @@ class TestPositionClass extends __1.BasePositionClass {
         });
     }
     doCancel() {
-        return __awaiter(this, void 0, void 0, function* () {
-            //
-        });
-    }
-    doLosscut() {
         return __awaiter(this, void 0, void 0, function* () {
             //
         });
@@ -201,7 +197,9 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
         bid: 100.0,
         ask: 101.0
     });
+    yield (0, my_utils_1.sleep)(10);
     yield pos.cancel();
+    yield (0, my_utils_1.sleep)(10);
     yield pos.updateOrder({
         orderID: "open1",
         market: "BCH-PERP",
@@ -244,7 +242,9 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
         bid: 100.0,
         ask: 101.0
     });
+    yield (0, my_utils_1.sleep)(10);
     yield pos.cancel();
+    yield (0, my_utils_1.sleep)(10);
     yield pos.updateOrder({
         orderID: "close1",
         market: "BCH-PERP",
@@ -257,12 +257,14 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
         remainingSize: 1,
         avgFillPrice: 0
     });
+    yield (0, my_utils_1.sleep)(10);
     yield pos.updateTicker({
         time: Date.now().toString(),
         bid: 100.0,
         ask: 101.0
     });
     expect(pos.state.isNoOrder).toBe(false);
+    yield (0, my_utils_1.sleep)(10);
     yield pos.updateOrder({
         orderID: "close1",
         market: "BCH-PERP",
@@ -280,7 +282,7 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
     expect(pos.state.positionState).toBe("closed");
     expect(pos.profit).toBe(1);
 }));
-test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* () {
+test('Losscut PositionClass', () => __awaiter(void 0, void 0, void 0, function* () {
     const checkOpen = (pos) => {
         return true;
     };
@@ -290,14 +292,17 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 99,
         checkOpen: checkOpen,
-        checkClose: checkClose
+        checkClose: checkClose,
+        checkLosscut: checkLosscut
     });
     yield pos.updateTicker({
         time: Date.now().toString(),
         bid: 100.0,
         ask: 101.0
     });
+    yield (0, my_utils_1.sleep)(10);
     yield pos.updateOrder({
         orderID: "open1",
         market: "BCH-PERP",
@@ -310,21 +315,26 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
         remainingSize: 0,
         avgFillPrice: 100
     });
+    yield (0, my_utils_1.sleep)(10);
     yield pos.losscut();
+    yield (0, my_utils_1.sleep)(10);
     yield pos.updateOrder({
         orderID: "close1",
         market: "BCH-PERP",
         type: "limit",
         side: "sell",
         size: 1,
-        price: 101,
+        price: 99,
         status: "closed",
         filledSize: 1,
         remainingSize: 0,
-        avgFillPrice: 101
+        avgFillPrice: 99
     });
     expect(pos.closeCount).toBe(1);
+    expect(pos.losscutCount).toBe(1);
+    expect(pos.currentOpenPrice).toBe(100);
+    expect(pos.currentClosePrice).toBe(99);
     expect(pos.state.isNoOrder).toBe(true);
     expect(pos.state.positionState).toBe("closed");
-    expect(pos.profit).toBe(1);
+    expect(pos.profit).toBe(-1);
 }));

@@ -76,7 +76,7 @@ test('PositionStateClass Open Order Cancel', () => {
     expect(!pos.isNoOrder).toBeTruthy();
     expect(pos.orderID).toBe("id1");
     expect(pos.orderCanceling).toBeTruthy();
-    pos.setOrderClosed();
+    pos.setOrderCanceled();
     expect(pos.enabledOpen).toBeTruthy();
     expect(pos.orderState).toBe("none");
     expect(pos.positionState).toBe("neutral");
@@ -99,7 +99,7 @@ test('PositionStateClass Close', () => {
     expect(!pos.enabledOpen).toBeTruthy();
     expect(!pos.enabledClose).toBeTruthy();
     expect(!pos.enabledCancel).toBeTruthy();
-    expect(!pos.enabledLosscut).toBeTruthy();
+    expect(pos.enabledLosscut).toBeTruthy();
     expect(!pos.isLosscut).toBeTruthy();
     expect(!pos.isNoOrder).toBeTruthy();
     expect(!pos.orderID).toBeTruthy();
@@ -110,7 +110,7 @@ test('PositionStateClass Close', () => {
     expect(!pos.enabledOpen).toBeTruthy();
     expect(!pos.enabledClose).toBeTruthy();
     expect(pos.enabledCancel).toBeTruthy();
-    expect(!pos.enabledLosscut).toBeTruthy();
+    expect(pos.enabledLosscut).toBeTruthy();
     expect(!pos.isLosscut).toBeTruthy();
     expect(!pos.isNoOrder).toBeTruthy();
     expect(pos.orderID).toBe("id2");
@@ -145,7 +145,7 @@ test('PositionStateClass Open Order Cancel', () => {
     expect(!pos.isNoOrder).toBeTruthy();
     expect(pos.orderID).toBe("id2");
     expect(pos.orderCanceling).toBeTruthy();
-    pos.setOrderClosed();
+    pos.setOrderCanceled();
     expect(!pos.enabledOpen).toBeTruthy();
     expect(pos.orderState).toBe("none");
     expect(pos.positionState).toBe("opened");

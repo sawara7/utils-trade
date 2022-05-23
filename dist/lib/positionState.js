@@ -52,10 +52,7 @@ class PositionStateClass {
         if (this.isNoOrder) {
             throw new Error("order closed error.");
         }
-        if (this._canceling) {
-            this._canceling = false;
-        }
-        else if (this._orderState === "open") {
+        if (this._orderState === "open") {
             this._positionState = "opened";
         }
         else if (this._orderState === "close") {
@@ -65,6 +62,14 @@ class PositionStateClass {
             this._positionState = "closed";
             this._isLosscut = false;
         }
+        this._orderState = "none";
+        this._orderID = undefined;
+    }
+    setOrderCanceled() {
+        if (this.isNoOrder || !this._canceling) {
+            throw new Error("order canceled error.");
+        }
+        this._canceling = false;
         this._orderState = "none";
         this._orderID = undefined;
     }
@@ -91,19 +96,19 @@ class PositionStateClass {
         return this._orderID;
     }
     get isNoOrder() {
-        return !this.orderID && this.orderState === "none" && !this.orderCanceling;
+        return !this.orderID && this.orderState === "none";
     }
     get enabledOpen() {
         const c = ["neutral", "closed"];
-        return c.includes(this.positionState) && this.isNoOrder;
+        return c.includes(this.positionState) && this.isNoOrder && !this._canceling;
     }
     get enabledClose() {
         const c = ["opened"];
-        return c.includes(this.positionState) && this.isNoOrder;
+        return c.includes(this.positionState) && this.isNoOrder && !this._canceling;
     }
     get enabledLosscut() {
         const c = ["opened"];
-        return c.includes(this.positionState) && !this.isLosscut;
+        return c.includes(this.positionState) && !this.isLosscut && !this._canceling;
     }
     get enabledCancel() {
         return this.orderState !== "none" &&

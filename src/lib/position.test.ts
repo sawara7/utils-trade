@@ -1,5 +1,7 @@
+import { syncBuiltinESMExports } from "module";
 import { execPath } from "process";
 import { BaseOrderClass, BasePositionClass, MarketInfo } from "..";
+import { sleep } from "my-utils";
 
 export class TestPositionClass extends BasePositionClass {
     async doOpen() {
@@ -9,9 +11,6 @@ export class TestPositionClass extends BasePositionClass {
         return "close1"
     }
     async doCancel(){
-        //
-    }
-    async doLosscut() {
         //
     }
 }
@@ -195,7 +194,9 @@ test('Cancel PositionClass', async () => {
         bid: 100.0,
         ask: 101.0
     })
+    await sleep(10)
     await pos.cancel()
+    await sleep(10)
     await pos.updateOrder({
         orderID: "open1",
         market: "BCH-PERP",
@@ -238,7 +239,9 @@ test('Cancel PositionClass', async () => {
         bid: 100.0,
         ask: 101.0
     })
+    await sleep(10)
     await pos.cancel()
+    await sleep(10)
     await pos.updateOrder({
         orderID: "close1",
         market: "BCH-PERP",
@@ -251,12 +254,14 @@ test('Cancel PositionClass', async () => {
         remainingSize: 1,
         avgFillPrice: 0
     })
+    await sleep(10)
     await pos.updateTicker({
         time: Date.now().toString(),
         bid: 100.0,
         ask: 101.0
     })
     expect(pos.state.isNoOrder).toBe(false)
+    await sleep(10)
     await pos.updateOrder({
         orderID: "close1",
         market: "BCH-PERP",
@@ -275,7 +280,7 @@ test('Cancel PositionClass', async () => {
     expect(pos.profit).toBe(1)
 })
 
-test('Cancel PositionClass', async () => {
+test('Losscut PositionClass', async () => {
     const checkOpen = (pos: BasePositionClass): boolean => {
         return true
     }
@@ -285,14 +290,17 @@ test('Cancel PositionClass', async () => {
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 99,
         checkOpen: checkOpen,
-        checkClose: checkClose
+        checkClose: checkClose,
+        checkLosscut: checkLosscut
     })
     await pos.updateTicker({
         time: Date.now().toString(),
         bid: 100.0,
         ask: 101.0
     })
+    await sleep(10)
     await pos.updateOrder({
         orderID: "open1",
         market: "BCH-PERP",
@@ -305,21 +313,26 @@ test('Cancel PositionClass', async () => {
         remainingSize: 0,
         avgFillPrice: 100
     })
+    await sleep(10)
     await pos.losscut()
+    await sleep(10)
     await pos.updateOrder({
         orderID: "close1",
         market: "BCH-PERP",
         type: "limit",
         side: "sell",
         size: 1,
-        price: 101,
+        price: 99,
         status: "closed",
         filledSize: 1,
         remainingSize: 0,
-        avgFillPrice: 101
+        avgFillPrice: 99
     })
     expect(pos.closeCount).toBe(1)
+    expect(pos.losscutCount).toBe(1)
+    expect(pos.currentOpenPrice).toBe(100)
+    expect(pos.currentClosePrice).toBe(99)
     expect(pos.state.isNoOrder).toBe(true)
     expect(pos.state.positionState).toBe("closed")
-    expect(pos.profit).toBe(1)
+    expect(pos.profit).toBe(-1)
 })

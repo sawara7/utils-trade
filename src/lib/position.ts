@@ -133,13 +133,15 @@ export abstract class BasePositionClass {
     abstract doCancel(): Promise<void>
 
     public async losscut(): Promise<void> {
-        this._positionState.setLosscut()
-        if (!this._positionState.enabledLosscut) {
-            await this.doLosscut()
+        if (this._positionState.enabledLosscut) {
+            this._positionState.setLosscut()
+            if (this.state.isNoOrder) {
+                await this.close()
+            } else {
+                await this.cancel()
+            }
         }
     }
-
-    abstract doLosscut(): Promise<void>
 
     public updateTicker(ticker: Ticker) {
         this.bestAsk = ticker.ask
@@ -169,21 +171,26 @@ export abstract class BasePositionClass {
                 this._initialSize = filled
                 this._openPrice = this._openOrder.roundPrice(order.avgFillPrice? order.avgFillPrice: order.price)
             }
-            if (this.state.orderState === "close") {
+            if (["close", "losscut"].includes(this.state.orderState)) {
                 this._currentSize = this._closeOrder.roundSize(this._currentSize - filled)
                 this._closePrice = this._closeOrder.roundPrice(order.avgFillPrice? order.avgFillPrice: order.price)
             }
         }
         if (filled !== size) {
             if (this.state.orderState === "open") {
-                this.state.setOrderClosed()
+                this.state.setOrderCanceled()
                 if (this.onOpenOrderCanceled) {
                     this.onOpenOrderCanceled(this)
                 }
                 return
             }
+            
+            if (this.state.orderState === "losscut") {
+                return
+            }
+
             if (this.state.orderState === "close") {
-                this.state.setOrderClosed()
+                this.state.setOrderCanceled()
                 if (this.state.isLosscut) {
                     this.close()
                 }
