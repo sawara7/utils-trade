@@ -152,6 +152,7 @@ export abstract class BasePositionClass {
         )){
             this.cancel()
         } else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)){
+            console.log("losscut")
             this.losscut()
         } else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
             this.open()
