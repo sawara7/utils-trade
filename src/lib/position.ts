@@ -93,8 +93,8 @@ export abstract class BasePositionClass {
     }
 
     public async open(): Promise<void> {
-        this.state.setBeforePlaceOrder("open")
         const res = await this.lock(async()=>{
+            this.state.setBeforePlaceOrder("open")
             const id = await this.doOpen()
             this.state.setAfterPlaceOrder(id)
         })
@@ -107,8 +107,8 @@ export abstract class BasePositionClass {
     abstract doOpen(): Promise<string>
 
     public async close(): Promise<void> {
-        this.state.setBeforePlaceOrder(this.state.isLosscut? "losscut": "close")
         const res = await this.lock(async()=>{
+            this.state.setBeforePlaceOrder(this.state.isLosscut? "losscut": "close")
             const id = await this.doClose()
             this.state.setAfterPlaceOrder(id)
         })
@@ -121,8 +121,8 @@ export abstract class BasePositionClass {
     abstract doClose(): Promise<string>
 
     public async cancel(): Promise<void> {
-        this._positionState.setCancelOrder()
         const res = await this.lock(async()=>{
+            this._positionState.setCancelOrder()
             await this.doCancel()
         })
         if (!res.success) {
@@ -152,8 +152,7 @@ export abstract class BasePositionClass {
             (this._checkCloseCancel && this._checkCloseCancel(this))
         )){
             this.cancel()
-        } else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)){
-            console.log("losscut")
+        } else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
             this.losscut()
         } else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
             this.open()

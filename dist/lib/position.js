@@ -42,8 +42,8 @@ class BasePositionClass {
     }
     open() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.state.setBeforePlaceOrder("open");
             const res = yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
+                this.state.setBeforePlaceOrder("open");
                 const id = yield this.doOpen();
                 this.state.setAfterPlaceOrder(id);
             }));
@@ -55,8 +55,8 @@ class BasePositionClass {
     }
     close() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.state.setBeforePlaceOrder(this.state.isLosscut ? "losscut" : "close");
             const res = yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
+                this.state.setBeforePlaceOrder(this.state.isLosscut ? "losscut" : "close");
                 const id = yield this.doClose();
                 this.state.setAfterPlaceOrder(id);
             }));
@@ -68,8 +68,8 @@ class BasePositionClass {
     }
     cancel() {
         return __awaiter(this, void 0, void 0, function* () {
-            this._positionState.setCancelOrder();
             const res = yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
+                this._positionState.setCancelOrder();
                 yield this.doCancel();
             }));
             if (!res.success) {
@@ -99,7 +99,6 @@ class BasePositionClass {
             this.cancel();
         }
         else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
-            console.log("losscut");
             this.losscut();
         }
         else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
