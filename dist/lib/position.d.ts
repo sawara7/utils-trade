@@ -20,7 +20,7 @@ export interface Order {
 }
 export interface BasePositionParameters {
     backtestMode?: boolean;
-    losscutPrice?: number;
+    losscutPrice: number;
     openOrder: BaseOrderClass;
     closeOrder: BaseOrderClass;
     checkOpen: (pos: BasePositionClass) => boolean;
@@ -42,7 +42,7 @@ export declare abstract class BasePositionClass {
     protected _losscutCount: number;
     private _initialSize;
     private _currentSize;
-    private _losscutPrice?;
+    private _losscutPrice;
     private _openSide;
     private _openPrice;
     private _closePrice;
@@ -80,7 +80,7 @@ export declare abstract class BasePositionClass {
     get bestAsk(): number;
     set bestAsk(value: number);
     get state(): PositionStateClass;
-    get losscutPrice(): number | undefined;
+    get losscutPrice(): number;
     get currentOpenPrice(): number;
     get currentClosePrice(): number;
     get currentSize(): number;

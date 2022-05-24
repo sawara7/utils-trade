@@ -22,6 +22,7 @@ class BasePositionClass {
         // Position
         this._initialSize = 0;
         this._currentSize = 0;
+        this._losscutPrice = 0;
         this._openPrice = 0;
         this._closePrice = 0;
         this._orderLock = false;

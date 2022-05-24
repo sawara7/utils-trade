@@ -64,6 +64,7 @@ test('Create PositionClass', () => {
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 0,
         checkOpen: checkOpen,
         checkClose: checkClose
     })
@@ -89,6 +90,7 @@ test('Open PositionClass', async () => {
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 0,
         checkOpen: checkOpen,
         checkClose: checkClose
     })
@@ -134,6 +136,7 @@ test('Close PositionClass', async () => {
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 0,
         checkOpen: checkOpen,
         checkClose: checkClose
     })
@@ -186,6 +189,7 @@ test('Cancel PositionClass', async () => {
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 0,
         checkOpen: checkOpen,
         checkClose: checkClose
     })

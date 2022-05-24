@@ -71,6 +71,7 @@ test('Create PositionClass', () => {
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 0,
         checkOpen: checkOpen,
         checkClose: checkClose
     });
@@ -95,6 +96,7 @@ test('Open PositionClass', () => __awaiter(void 0, void 0, void 0, function* () 
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 0,
         checkOpen: checkOpen,
         checkClose: checkClose
     });
@@ -138,6 +140,7 @@ test('Close PositionClass', () => __awaiter(void 0, void 0, void 0, function* ()
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 0,
         checkOpen: checkOpen,
         checkClose: checkClose
     });
@@ -189,6 +192,7 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
     const pos = new TestPositionClass({
         openOrder: openOrder,
         closeOrder: closeOrder,
+        losscutPrice: 0,
         checkOpen: checkOpen,
         checkClose: checkClose
     });
