@@ -32,6 +32,7 @@ class BasePositionClass {
         this._openOrder = params.openOrder;
         this._closeOrder = params.closeOrder;
         this._openSide = params.openOrder.side;
+        this._losscutPrice = params.losscutPrice;
         this._checkOpen = params.checkOpen;
         this._checkClose = params.checkClose;
         this._checkCloseCancel = params.checkCloseCancel;
@@ -97,6 +98,7 @@ class BasePositionClass {
             this.cancel();
         }
         else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
+            console.log("losscut");
             this.losscut();
         }
         else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {

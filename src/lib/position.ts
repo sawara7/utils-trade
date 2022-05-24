@@ -84,6 +84,7 @@ export abstract class BasePositionClass {
         this._openOrder = params.openOrder
         this._closeOrder = params.closeOrder
         this._openSide = params.openOrder.side
+        this._losscutPrice = params.losscutPrice
         this._checkOpen = params.checkOpen
         this._checkClose = params.checkClose
         this._checkCloseCancel = params.checkCloseCancel
