@@ -290,66 +290,9 @@ test('Losscut PositionClass', async () => {
     }
     const checkClose = (pos: BasePositionClass): boolean => {
         return true
-    }    
-    const pos = new TestPositionClass({
-        openOrder: openOrder,
-        closeOrder: closeOrder,
-        losscutPrice: 99,
-        checkOpen: checkOpen,
-        checkClose: checkClose,
-        checkLosscut: checkLosscut
-    })
-    await pos.updateTicker({
-        time: Date.now().toString(),
-        bid: 100.0,
-        ask: 101.0
-    })
-    await sleep(10)
-    await pos.updateOrder({
-        orderID: "open1",
-        market: "BCH-PERP",
-        type: "limit",
-        side: "buy",
-        size: 1,
-        price: 100,
-        status: "closed",
-        filledSize: 1,
-        remainingSize: 0,
-        avgFillPrice: 100
-    })
-    await sleep(10)
-    await pos.losscut()
-    await sleep(10)
-    await pos.updateOrder({
-        orderID: "close1",
-        market: "BCH-PERP",
-        type: "limit",
-        side: "sell",
-        size: 1,
-        price: 99,
-        status: "closed",
-        filledSize: 1,
-        remainingSize: 0,
-        avgFillPrice: 99
-    })
-    expect(pos.closeCount).toBe(1)
-    expect(pos.losscutCount).toBe(1)
-    expect(pos.currentOpenPrice).toBe(100)
-    expect(pos.currentClosePrice).toBe(99)
-    expect(pos.state.isNoOrder).toBe(true)
-    expect(pos.state.positionState).toBe("closed")
-    expect(pos.profit).toBe(-1)
-})
-
-test('Losscut PositionClass', async () => {
-    const checkOpen = (pos: BasePositionClass): boolean => {
-        return true
-    }
-    const checkClose = (pos: BasePositionClass): boolean => {
-        return true
     }  
     const checkLosscut = (pos: BasePositionClass): boolean => {
-        return true
+        return pos.bestBid < 99
     }    
     const pos = new TestPositionClass({
         openOrder: openOrder,
@@ -380,6 +323,31 @@ test('Losscut PositionClass', async () => {
     await sleep(10)
     await pos.updateTicker({
         time: Date.now().toString(),
+        bid: 100,
+        ask: 101
+    })
+    await sleep(10)
+    await pos.updateTicker({
+        time: Date.now().toString(),
+        bid: 98,
+        ask: 99
+    })
+    await sleep(10)
+    await pos.updateOrder({
+        orderID: "close1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "sell",
+        size: 1,
+        price: 98,
+        status: "closed",
+        filledSize: 0,
+        remainingSize: 1,
+        avgFillPrice: 0
+    })
+    await sleep(10)
+    await pos.updateTicker({
+        time: Date.now().toString(),
         bid: 100.0,
         ask: 101.0
     })
@@ -396,6 +364,7 @@ test('Losscut PositionClass', async () => {
         remainingSize: 0,
         avgFillPrice: 99
     })
+    await sleep(10)
     expect(pos.closeCount).toBe(1)
     expect(pos.losscutCount).toBe(1)
     expect(pos.currentOpenPrice).toBe(100)

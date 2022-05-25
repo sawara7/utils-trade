@@ -81,11 +81,8 @@ class BasePositionClass {
     losscut() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._positionState.enabledLosscut) {
-                this._positionState.setLosscut();
-                if (this.state.isNoOrder) {
-                    yield this.close();
-                }
-                else {
+                if (!this.state.isNoOrder && !this.state.orderCanceling) {
+                    this._positionState.setLosscut();
                     yield this.cancel();
                 }
             }
@@ -98,14 +95,14 @@ class BasePositionClass {
             (this._checkCloseCancel && this._checkCloseCancel(this)))) {
             this.cancel();
         }
-        else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
-            this.losscut();
-        }
         else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
             this.open();
         }
         else if (this.state.enabledClose && this._checkClose && this._checkClose(this)) {
             this.close();
+        }
+        else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
+            this.losscut();
         }
     }
     updateOrder(order) {
@@ -142,7 +139,7 @@ class BasePositionClass {
             if (this.state.orderState === "close") {
                 this.state.setOrderCanceled();
                 if (this.state.isLosscut) {
-                    this.close();
+                    // this.close()
                 }
                 if (this.onCloseOrderCanceled) {
                     this.onCloseOrderCanceled(this);

@@ -68,7 +68,8 @@ export class PositionStateClass {
 
     public setOrderCanceled() {
         if (this.isNoOrder || !this._canceling) {
-            throw new Error("order canceled error.")
+            // console.log("order canceled error")
+            // throw new Error("order canceled error.")
         }
         this._canceling = false
         this._orderState = "none"

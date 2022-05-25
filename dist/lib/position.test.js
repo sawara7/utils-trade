@@ -293,64 +293,8 @@ test('Losscut PositionClass', () => __awaiter(void 0, void 0, void 0, function* 
     const checkClose = (pos) => {
         return true;
     };
-    const pos = new TestPositionClass({
-        openOrder: openOrder,
-        closeOrder: closeOrder,
-        losscutPrice: 99,
-        checkOpen: checkOpen,
-        checkClose: checkClose,
-        checkLosscut: checkLosscut
-    });
-    yield pos.updateTicker({
-        time: Date.now().toString(),
-        bid: 100.0,
-        ask: 101.0
-    });
-    yield (0, my_utils_1.sleep)(10);
-    yield pos.updateOrder({
-        orderID: "open1",
-        market: "BCH-PERP",
-        type: "limit",
-        side: "buy",
-        size: 1,
-        price: 100,
-        status: "closed",
-        filledSize: 1,
-        remainingSize: 0,
-        avgFillPrice: 100
-    });
-    yield (0, my_utils_1.sleep)(10);
-    yield pos.losscut();
-    yield (0, my_utils_1.sleep)(10);
-    yield pos.updateOrder({
-        orderID: "close1",
-        market: "BCH-PERP",
-        type: "limit",
-        side: "sell",
-        size: 1,
-        price: 99,
-        status: "closed",
-        filledSize: 1,
-        remainingSize: 0,
-        avgFillPrice: 99
-    });
-    expect(pos.closeCount).toBe(1);
-    expect(pos.losscutCount).toBe(1);
-    expect(pos.currentOpenPrice).toBe(100);
-    expect(pos.currentClosePrice).toBe(99);
-    expect(pos.state.isNoOrder).toBe(true);
-    expect(pos.state.positionState).toBe("closed");
-    expect(pos.profit).toBe(-1);
-}));
-test('Losscut PositionClass', () => __awaiter(void 0, void 0, void 0, function* () {
-    const checkOpen = (pos) => {
-        return true;
-    };
-    const checkClose = (pos) => {
-        return true;
-    };
     const checkLosscut = (pos) => {
-        return true;
+        return pos.bestBid < 99;
     };
     const pos = new TestPositionClass({
         openOrder: openOrder,
@@ -381,6 +325,31 @@ test('Losscut PositionClass', () => __awaiter(void 0, void 0, void 0, function* 
     yield (0, my_utils_1.sleep)(10);
     yield pos.updateTicker({
         time: Date.now().toString(),
+        bid: 100,
+        ask: 101
+    });
+    yield (0, my_utils_1.sleep)(10);
+    yield pos.updateTicker({
+        time: Date.now().toString(),
+        bid: 98,
+        ask: 99
+    });
+    yield (0, my_utils_1.sleep)(10);
+    yield pos.updateOrder({
+        orderID: "close1",
+        market: "BCH-PERP",
+        type: "limit",
+        side: "sell",
+        size: 1,
+        price: 98,
+        status: "closed",
+        filledSize: 0,
+        remainingSize: 1,
+        avgFillPrice: 0
+    });
+    yield (0, my_utils_1.sleep)(10);
+    yield pos.updateTicker({
+        time: Date.now().toString(),
         bid: 100.0,
         ask: 101.0
     });
@@ -397,6 +366,7 @@ test('Losscut PositionClass', () => __awaiter(void 0, void 0, void 0, function* 
         remainingSize: 0,
         avgFillPrice: 99
     });
+    yield (0, my_utils_1.sleep)(10);
     expect(pos.closeCount).toBe(1);
     expect(pos.losscutCount).toBe(1);
     expect(pos.currentOpenPrice).toBe(100);
