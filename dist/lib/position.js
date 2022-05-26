@@ -82,7 +82,6 @@ class BasePositionClass {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._positionState.enabledLosscut) {
                 if (!this.state.isNoOrder && !this.state.orderCanceling) {
-                    console.log('losscut');
                     this._positionState.setLosscut();
                     yield this.cancel();
                 }
@@ -94,15 +93,19 @@ class BasePositionClass {
         this.bestBid = ticker.bid;
         if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
             (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this))) {
+            console.log(this.currentOpenPrice, this.state.positionState, 'cancel');
             this.cancel();
         }
         else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
+            console.log(this.currentOpenPrice, 'open');
             this.open();
         }
         else if (this.state.enabledClose && this._checkClose && this._checkClose(this)) {
+            console.log(this.currentOpenPrice, 'close');
             this.close();
         }
         else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
+            console.log(this.currentOpenPrice, 'losscut');
             this.losscut();
         }
     }
