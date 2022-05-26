@@ -93,19 +93,19 @@ class BasePositionClass {
         this.bestBid = ticker.bid;
         if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
             (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this))) {
-            console.log(this.currentOpenPrice, this.state.positionState, 'cancel');
+            console.log(this.openOrder.price, this.state.positionState, 'cancel');
             this.cancel();
         }
         else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
-            console.log(this.currentOpenPrice, 'open');
+            console.log(this.openOrder.price, 'open');
             this.open();
         }
         else if (this.state.enabledClose && this._checkClose && this._checkClose(this)) {
-            console.log(this.currentOpenPrice, 'close');
+            console.log(this.openOrder.price, 'close');
             this.close();
         }
         else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
-            console.log(this.currentOpenPrice, 'losscut');
+            console.log(this.openOrder.price, 'losscut');
             this.losscut();
         }
     }
