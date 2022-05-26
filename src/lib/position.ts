@@ -127,7 +127,7 @@ export abstract class BasePositionClass {
         })
         if (!res.success) {
             console.log("[cancel error]" + res.message)
-            // this.state.setOrderCancelFailed()
+            this.state.setOrderCancelFailed()
         }
     }
 
@@ -136,6 +136,7 @@ export abstract class BasePositionClass {
     public async losscut(): Promise<void> {
         if (this._positionState.enabledLosscut) {
             if (!this.state.isNoOrder && !this.state.orderCanceling) {
+                console.log('losscut')
                 this._positionState.setLosscut()
                 await this.cancel()
             }
@@ -145,10 +146,9 @@ export abstract class BasePositionClass {
     public updateTicker(ticker: Ticker) {
         this.bestAsk = ticker.ask
         this.bestBid = ticker.bid
-        if (this.state.enabledCancel && (
-            (this._checkOpenCancel && this._checkOpenCancel(this)) ||
-            (this._checkCloseCancel && this._checkCloseCancel(this))
-        )){
+        if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
+            (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this))
+        ){
             this.cancel()
         } else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
             this.open()

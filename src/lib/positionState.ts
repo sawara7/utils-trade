@@ -124,12 +124,22 @@ export class PositionStateClass {
         return c.includes(this.positionState) && !this.isLosscut && !this._canceling
     }
 
-    get enabledCancel(): boolean {
-        return this.orderState !== "none" &&
-        !!this.orderID &&
-        !this.orderCanceling
+    get enabledOpenOrderCancel(): boolean {
+        const c: PositionState[] = ["neutral", "closed"]
+        return c.includes(this.positionState) &&
+         this.orderState !== "none" &&
+         !!this.orderID &&
+         !this.orderCanceling
     }
     
+    get enabledCloseOrderCancel(): boolean {
+        const c: PositionState[] = ["opened"]
+        return c.includes(this.positionState) && 
+         this.orderState !== "none" &&
+         !!this.orderID &&
+         !this.orderCanceling
+    }
+
     public reset() {
         this._positionState = "neutral"
         this._isLosscut = false

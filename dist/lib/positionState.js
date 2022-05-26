@@ -111,8 +111,17 @@ class PositionStateClass {
         const c = ["opened"];
         return c.includes(this.positionState) && !this.isLosscut && !this._canceling;
     }
-    get enabledCancel() {
-        return this.orderState !== "none" &&
+    get enabledOpenOrderCancel() {
+        const c = ["neutral", "closed"];
+        return c.includes(this.positionState) &&
+            this.orderState !== "none" &&
+            !!this.orderID &&
+            !this.orderCanceling;
+    }
+    get enabledCloseOrderCancel() {
+        const c = ["opened"];
+        return c.includes(this.positionState) &&
+            this.orderState !== "none" &&
             !!this.orderID &&
             !this.orderCanceling;
     }

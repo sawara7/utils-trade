@@ -82,6 +82,7 @@ class BasePositionClass {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._positionState.enabledLosscut) {
                 if (!this.state.isNoOrder && !this.state.orderCanceling) {
+                    console.log('losscut');
                     this._positionState.setLosscut();
                     yield this.cancel();
                 }
@@ -91,8 +92,8 @@ class BasePositionClass {
     updateTicker(ticker) {
         this.bestAsk = ticker.ask;
         this.bestBid = ticker.bid;
-        if (this.state.enabledCancel && ((this._checkOpenCancel && this._checkOpenCancel(this)) ||
-            (this._checkCloseCancel && this._checkCloseCancel(this)))) {
+        if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
+            (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this))) {
             this.cancel();
         }
         else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
@@ -232,7 +233,7 @@ class BasePositionClass {
             if (this._orderLock) {
                 return {
                     success: false,
-                    message: 'Open Locked'
+                    message: 'Order Locked'
                 };
             }
             try {

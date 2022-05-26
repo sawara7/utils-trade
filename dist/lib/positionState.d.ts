@@ -25,6 +25,7 @@ export declare class PositionStateClass {
     get enabledOpen(): boolean;
     get enabledClose(): boolean;
     get enabledLosscut(): boolean;
-    get enabledCancel(): boolean;
+    get enabledOpenOrderCancel(): boolean;
+    get enabledCloseOrderCancel(): boolean;
     reset(): void;
 }

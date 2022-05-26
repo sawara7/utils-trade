@@ -103,7 +103,7 @@ test('Open PositionClass', async () => {
     expect(pos.bestBid).toBe(100)
     expect(pos.state.enabledOpen).toBe(false)
     expect(pos.state.orderState).toBe("open")
-    expect(pos.state.enabledCancel).toBe(true)
+    expect(pos.state.enabledOpenOrderCancel).toBe(true)
     expect(pos.state.orderID).toBe("open1")
 
     await pos.updateOrder({
@@ -120,7 +120,7 @@ test('Open PositionClass', async () => {
     })
     expect(pos.state.enabledOpen).toBe(false)
     expect(pos.state.orderState).toBe("none")
-    expect(pos.state.enabledCancel).toBe(false)
+    expect(pos.state.enabledCloseOrderCancel).toBe(false)
     expect(pos.state.orderID).toBe(undefined)
     expect(pos.currentOpenPrice).toBe(100)
     expect(pos.currentSize).toBe(1)
