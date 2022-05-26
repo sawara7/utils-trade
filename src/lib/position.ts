@@ -127,7 +127,7 @@ export abstract class BasePositionClass {
         })
         if (!res.success) {
             console.log("[cancel error]" + res.message)
-            this.state.setOrderCancelFailed()
+            // this.state.setOrderCancelFailed()
         }
     }
 
@@ -300,7 +300,7 @@ export abstract class BasePositionClass {
         if (this._orderLock) {
             return {
                 success: false,
-                message: 'Open Locked'
+                message: 'Order Locked'
             }
         }
         try {
