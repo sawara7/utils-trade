@@ -63,7 +63,9 @@ export abstract class BasePositionClass {
 
     private _orderLock: boolean = false
     private _bestBid: number = 0
+    private _previousBid: number = 0
     private _bestAsk: number = 0
+    private _previousAsk: number = 0
 
     // Events
     public onOpened?: (pos: BasePositionClass) => void
@@ -113,7 +115,7 @@ export abstract class BasePositionClass {
             this.state.setAfterPlaceOrder(id)
         })
         if (!res.success) {
-            console.log("[close error]" + res.message)
+            console.log("[closer error]" + res.message)
             this.state.setOrderFailed()
         }
     }
@@ -148,16 +150,16 @@ export abstract class BasePositionClass {
         if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
             (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this))
         ){
-            console.log(this.openOrder.price, this.state.positionState, 'cancel')
+            console.log(this.currentOpenPrice, this.state.positionState, 'cancel')
             this.cancel()
         } else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
-            console.log(this.openOrder.price, 'open')
+            console.log(this.currentOpenPrice, 'open')
             this.open()
         } else if (this.state.enabledClose && this._checkClose && this._checkClose(this)) {
-            console.log(this.openOrder.price, 'close')
+            console.log(this.currentOpenPrice, 'close')
             this.close()
         } else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
-            console.log(this.openOrder.price, 'losscut')
+            console.log(this.currentOpenPrice, 'losscut')
             this.losscut()
         }
     }
@@ -250,7 +252,12 @@ export abstract class BasePositionClass {
         return this._bestBid
     }
 
+    get previousBid(): number {
+        return this._previousBid
+    }
+
     set bestBid(value: number) {
+        this._previousBid = this._bestBid
         this._bestBid = value
         if (this._currentSize > 0 && this._openSide === 'buy') {
             this._unrealizedProfit = (value - this._openPrice) * this._currentSize
@@ -261,7 +268,12 @@ export abstract class BasePositionClass {
         return this._bestAsk
     }
 
+    get previousAsk(): number {
+        return this._previousAsk
+    }
+
     set bestAsk(value: number) {
+        this._previousAsk = this._bestAsk
         this._bestAsk = value
         if (this._currentSize > 0 && this._openSide === 'sell') {
             this._unrealizedProfit = (this._openPrice - value) * this._currentSize

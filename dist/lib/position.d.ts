@@ -51,7 +51,9 @@ export declare abstract class BasePositionClass {
     protected _positionState: PositionStateClass;
     private _orderLock;
     private _bestBid;
+    private _previousBid;
     private _bestAsk;
+    private _previousAsk;
     onOpened?: (pos: BasePositionClass) => void;
     onClosed?: (pos: BasePositionClass) => void;
     onOpenOrderCanceled?: (pos: BasePositionClass) => void;
@@ -76,8 +78,10 @@ export declare abstract class BasePositionClass {
     get closeCount(): number;
     get losscutCount(): number;
     get bestBid(): number;
+    get previousBid(): number;
     set bestBid(value: number);
     get bestAsk(): number;
+    get previousAsk(): number;
     set bestAsk(value: number);
     get state(): PositionStateClass;
     get losscutPrice(): number;

@@ -27,7 +27,9 @@ class BasePositionClass {
         this._closePrice = 0;
         this._orderLock = false;
         this._bestBid = 0;
+        this._previousBid = 0;
         this._bestAsk = 0;
+        this._previousAsk = 0;
         this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
         this._openOrder = params.openOrder;
@@ -61,7 +63,7 @@ class BasePositionClass {
                 this.state.setAfterPlaceOrder(id);
             }));
             if (!res.success) {
-                console.log("[close error]" + res.message);
+                console.log("[closer error]" + res.message);
                 this.state.setOrderFailed();
             }
         });
@@ -93,19 +95,19 @@ class BasePositionClass {
         this.bestBid = ticker.bid;
         if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
             (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this))) {
-            console.log(this.openOrder.price, this.state.positionState, 'cancel');
+            console.log(this.currentOpenPrice, this.state.positionState, 'cancel');
             this.cancel();
         }
         else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
-            console.log(this.openOrder.price, 'open');
+            console.log(this.currentOpenPrice, 'open');
             this.open();
         }
         else if (this.state.enabledClose && this._checkClose && this._checkClose(this)) {
-            console.log(this.openOrder.price, 'close');
+            console.log(this.currentOpenPrice, 'close');
             this.close();
         }
         else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
-            console.log(this.openOrder.price, 'losscut');
+            console.log(this.currentOpenPrice, 'losscut');
             this.losscut();
         }
     }
@@ -192,7 +194,11 @@ class BasePositionClass {
     get bestBid() {
         return this._bestBid;
     }
+    get previousBid() {
+        return this._previousBid;
+    }
     set bestBid(value) {
+        this._previousBid = this._bestBid;
         this._bestBid = value;
         if (this._currentSize > 0 && this._openSide === 'buy') {
             this._unrealizedProfit = (value - this._openPrice) * this._currentSize;
@@ -201,7 +207,11 @@ class BasePositionClass {
     get bestAsk() {
         return this._bestAsk;
     }
+    get previousAsk() {
+        return this._previousAsk;
+    }
     set bestAsk(value) {
+        this._previousAsk = this._bestAsk;
         this._bestAsk = value;
         if (this._currentSize > 0 && this._openSide === 'sell') {
             this._unrealizedProfit = (this._openPrice - value) * this._currentSize;
