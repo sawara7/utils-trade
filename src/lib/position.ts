@@ -113,7 +113,7 @@ export abstract class BasePositionClass {
             this.state.setAfterPlaceOrder(id)
         })
         if (!res.success) {
-            console.log("[closer error]" + res.message)
+            console.log("[close error]" + res.message)
             this.state.setOrderFailed()
         }
     }
