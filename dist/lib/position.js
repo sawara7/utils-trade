@@ -30,6 +30,10 @@ class BasePositionClass {
         this._previousBid = 0;
         this._bestAsk = 0;
         this._previousAsk = 0;
+        this._ema100Bid = 0;
+        this._ema100Ask = 0;
+        this._ema1000Bid = 0;
+        this._ema1000Ask = 0;
         this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
         this._openOrder = params.openOrder;
@@ -200,6 +204,8 @@ class BasePositionClass {
     set bestBid(value) {
         this._previousBid = this._bestBid;
         this._bestBid = value;
+        this._ema100Bid = this._ema100Bid * (1 - 1 / 100) + value * 1 / 100;
+        this._ema1000Bid = this._ema1000Bid * (1 - 1 / 1000) + value * 1 / 1000;
         if (this._currentSize > 0 && this._openSide === 'buy') {
             this._unrealizedProfit = (value - this._openPrice) * this._currentSize;
         }
@@ -213,6 +219,8 @@ class BasePositionClass {
     set bestAsk(value) {
         this._previousAsk = this._bestAsk;
         this._bestAsk = value;
+        this._ema100Ask = this._ema100Ask * (1 - 1 / 100) + value * 1 / 100;
+        this._ema1000Ask = this._ema1000Ask * (1 - 1 / 1000) + value * 1 / 1000;
         if (this._currentSize > 0 && this._openSide === 'sell') {
             this._unrealizedProfit = (this._openPrice - value) * this._currentSize;
         }

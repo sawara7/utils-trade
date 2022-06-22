@@ -54,6 +54,10 @@ export declare abstract class BasePositionClass {
     private _previousBid;
     private _bestAsk;
     private _previousAsk;
+    private _ema100Bid;
+    private _ema100Ask;
+    private _ema1000Bid;
+    private _ema1000Ask;
     onOpened?: (pos: BasePositionClass) => void;
     onClosed?: (pos: BasePositionClass) => void;
     onOpenOrderCanceled?: (pos: BasePositionClass) => void;

@@ -66,6 +66,10 @@ export abstract class BasePositionClass {
     private _previousBid: number = 0
     private _bestAsk: number = 0
     private _previousAsk: number = 0
+    private _ema100Bid: number = 0
+    private _ema100Ask: number = 0
+    private _ema1000Bid: number = 0
+    private _ema1000Ask: number = 0
 
     // Events
     public onOpened?: (pos: BasePositionClass) => void
@@ -259,6 +263,8 @@ export abstract class BasePositionClass {
     set bestBid(value: number) {
         this._previousBid = this._bestBid
         this._bestBid = value
+        this._ema100Bid = this._ema100Bid * (1-1/100) + value * 1/100
+        this._ema1000Bid = this._ema1000Bid * (1-1/1000) + value * 1/1000
         if (this._currentSize > 0 && this._openSide === 'buy') {
             this._unrealizedProfit = (value - this._openPrice) * this._currentSize
         }
@@ -275,6 +281,8 @@ export abstract class BasePositionClass {
     set bestAsk(value: number) {
         this._previousAsk = this._bestAsk
         this._bestAsk = value
+        this._ema100Ask = this._ema100Ask * (1-1/100) + value * 1/100
+        this._ema1000Ask = this._ema1000Ask * (1-1/1000) + value * 1/1000
         if (this._currentSize > 0 && this._openSide === 'sell') {
             this._unrealizedProfit = (this._openPrice - value) * this._currentSize
         }
