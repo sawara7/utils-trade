@@ -260,6 +260,14 @@ export abstract class BasePositionClass {
         return this._previousBid
     }
 
+    get emaBid100(): number {
+        return this._ema100Bid
+    }
+
+    get emaBid1000(): number {
+        return this._ema1000Bid
+    }
+
     set bestBid(value: number) {
         this._previousBid = this._bestBid
         this._bestBid = value
@@ -276,6 +284,14 @@ export abstract class BasePositionClass {
 
     get previousAsk(): number {
         return this._previousAsk
+    }
+
+    get emaAsk100(): number {
+        return this._ema100Ask
+    }
+
+    get emaAsk1000(): number {
+        return this._ema1000Ask
     }
 
     set bestAsk(value: number) {

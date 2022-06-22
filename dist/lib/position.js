@@ -201,6 +201,12 @@ class BasePositionClass {
     get previousBid() {
         return this._previousBid;
     }
+    get emaBid100() {
+        return this._ema100Bid;
+    }
+    get emaBid1000() {
+        return this._ema1000Bid;
+    }
     set bestBid(value) {
         this._previousBid = this._bestBid;
         this._bestBid = value;
@@ -215,6 +221,12 @@ class BasePositionClass {
     }
     get previousAsk() {
         return this._previousAsk;
+    }
+    get emaAsk100() {
+        return this._ema100Ask;
+    }
+    get emaAsk1000() {
+        return this._ema1000Ask;
     }
     set bestAsk(value) {
         this._previousAsk = this._bestAsk;

@@ -83,9 +83,13 @@ export declare abstract class BasePositionClass {
     get losscutCount(): number;
     get bestBid(): number;
     get previousBid(): number;
+    get emaBid100(): number;
+    get emaBid1000(): number;
     set bestBid(value: number);
     get bestAsk(): number;
     get previousAsk(): number;
+    get emaAsk100(): number;
+    get emaAsk1000(): number;
     set bestAsk(value: number);
     get state(): PositionStateClass;
     get losscutPrice(): number;
