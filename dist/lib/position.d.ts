@@ -58,6 +58,10 @@ export declare abstract class BasePositionClass {
     private _ema100Ask;
     private _ema1000Bid;
     private _ema1000Ask;
+    private _minBid;
+    private _minAsk;
+    private _maxBid;
+    private _maxAsk;
     onOpened?: (pos: BasePositionClass) => void;
     onClosed?: (pos: BasePositionClass) => void;
     onOpenOrderCanceled?: (pos: BasePositionClass) => void;
@@ -85,11 +89,15 @@ export declare abstract class BasePositionClass {
     get previousBid(): number;
     get emaBid100(): number;
     get emaBid1000(): number;
+    get maxBid(): number;
+    get minBid(): number;
     set bestBid(value: number);
     get bestAsk(): number;
     get previousAsk(): number;
     get emaAsk100(): number;
     get emaAsk1000(): number;
+    get maxAsk(): number;
+    get minAsk(): number;
     set bestAsk(value: number);
     get state(): PositionStateClass;
     get losscutPrice(): number;
