@@ -331,6 +331,9 @@ class BasePositionClass {
     get closeOrder() {
         return this._closeOrder;
     }
+    get losscutOrder() {
+        return this._losscutOrder;
+    }
     lock(cb) {
         return __awaiter(this, void 0, void 0, function* () {
             const res = {

@@ -114,5 +114,6 @@ export declare abstract class BasePositionClass {
     get currentSize(): number;
     get openOrder(): BaseOrderClass | undefined;
     get closeOrder(): BaseOrderClass | undefined;
+    get losscutOrder(): BaseOrderClass | undefined;
     private lock;
 }

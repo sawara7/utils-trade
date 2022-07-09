@@ -412,6 +412,10 @@ export abstract class BasePositionClass {
         return this._closeOrder
     }
 
+    get losscutOrder(): BaseOrderClass | undefined {
+        return this._losscutOrder
+    }
+
     private async lock(cb: ()=>Promise<void>): Promise<BasePositionResponse> {
         const res: BasePositionResponse = {
             success: true    
