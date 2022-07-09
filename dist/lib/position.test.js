@@ -45,10 +45,27 @@ const openOrder = new __1.BaseOrderClass({
     size: 1,
     price: 100
 });
+const closeOrder = new __1.BaseOrderClass({
+    market: marketInfo,
+    type: 'limit',
+    side: 'sell',
+    size: 1,
+    price: 101
+});
+const losscutOrder = new __1.BaseOrderClass({
+    market: marketInfo,
+    type: 'market',
+    side: 'sell',
+    size: 1,
+    price: 99
+});
 const checkOpen = (pos) => {
     return true;
 };
 const checkClose = (pos) => {
+    return true;
+};
+const checkLosscut = (pos) => {
     return true;
 };
 const checkOpenCancel = (pos) => {
@@ -57,21 +74,17 @@ const checkOpenCancel = (pos) => {
 const checkCloseCancel = (pos) => {
     return pos.state.orderState === "close";
 };
-const checkLosscut = (pos) => {
+const checkLosscutCancel = (pos) => {
     return pos.state.orderState === "losscut";
 };
-const closeOrder = new __1.BaseOrderClass({
-    market: marketInfo,
-    type: 'limit',
-    side: 'sell',
-    size: 1,
-    price: 101
-});
 test('Create PositionClass', () => {
     const pos = new TestPositionClass({
-        openOrder: openOrder,
-        closeOrder: closeOrder,
-        losscutPrice: 0,
+        getOpenOrder: (pos) => {
+            return openOrder;
+        },
+        getCloseOrder: (pos) => {
+            return closeOrder;
+        },
         checkOpen: checkOpen,
         checkClose: checkClose
     });
@@ -82,7 +95,6 @@ test('Create PositionClass', () => {
     expect(pos.currentOpenPrice).toBe(0);
     expect(pos.currentSize).toBe(0);
     expect(pos.losscutCount).toBe(0);
-    expect(!pos.losscutPrice).toBeTruthy();
     expect(pos.profit).toBe(0);
     expect(pos.state.enabledOpen).toBeTruthy();
 });
@@ -94,9 +106,12 @@ test('Open PositionClass', () => __awaiter(void 0, void 0, void 0, function* () 
         return false;
     };
     const pos = new TestPositionClass({
-        openOrder: openOrder,
-        closeOrder: closeOrder,
-        losscutPrice: 0,
+        getOpenOrder: (pos) => {
+            return openOrder;
+        },
+        getCloseOrder: (pos) => {
+            return closeOrder;
+        },
         checkOpen: checkOpen,
         checkClose: checkClose
     });
@@ -138,9 +153,12 @@ test('Close PositionClass', () => __awaiter(void 0, void 0, void 0, function* ()
         return true;
     };
     const pos = new TestPositionClass({
-        openOrder: openOrder,
-        closeOrder: closeOrder,
-        losscutPrice: 0,
+        getOpenOrder: (pos) => {
+            return openOrder;
+        },
+        getCloseOrder: (pos) => {
+            return closeOrder;
+        },
         checkOpen: checkOpen,
         checkClose: checkClose
     });
@@ -190,9 +208,12 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
         return true;
     };
     const pos = new TestPositionClass({
-        openOrder: openOrder,
-        closeOrder: closeOrder,
-        losscutPrice: 0,
+        getOpenOrder: (pos) => {
+            return openOrder;
+        },
+        getCloseOrder: (pos) => {
+            return closeOrder;
+        },
         checkOpen: checkOpen,
         checkClose: checkClose
     });
@@ -297,9 +318,15 @@ test('Losscut PositionClass', () => __awaiter(void 0, void 0, void 0, function* 
         return pos.bestBid < 99;
     };
     const pos = new TestPositionClass({
-        openOrder: openOrder,
-        closeOrder: closeOrder,
-        losscutPrice: 99,
+        getOpenOrder: (pos) => {
+            return openOrder;
+        },
+        getCloseOrder: (pos) => {
+            return closeOrder;
+        },
+        getLossCutOrder: (pos) => {
+            return losscutOrder;
+        },
         checkOpen: checkOpen,
         checkClose: checkClose,
         checkLosscut: checkLosscut

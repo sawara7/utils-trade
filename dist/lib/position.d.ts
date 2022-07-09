@@ -20,36 +20,35 @@ export interface Order {
 }
 export interface BasePositionParameters {
     backtestMode?: boolean;
-    losscutPrice: number;
-    openOrder: BaseOrderClass;
-    closeOrder: BaseOrderClass;
+    getOpenOrder: (pos: BasePositionClass) => BaseOrderClass;
+    getCloseOrder: (pos: BasePositionClass) => BaseOrderClass;
+    getLossCutOrder?: (pos: BasePositionClass) => BaseOrderClass;
     checkOpen: (pos: BasePositionClass) => boolean;
     checkClose: (pos: BasePositionClass) => boolean;
+    checkLosscut?: (pos: BasePositionClass) => boolean;
     checkOpenCancel?: (pos: BasePositionClass) => boolean;
     checkCloseCancel?: (pos: BasePositionClass) => boolean;
-    checkLosscut?: (pos: BasePositionClass) => boolean;
+    checkLosscutCancel?: (pos: BasePositionClass) => boolean;
 }
 export interface BasePositionResponse {
     success: boolean;
     message?: string;
 }
 export declare abstract class BasePositionClass {
+    private _orderLock;
     protected _backtestMode: boolean;
     protected _closeCount: number;
     protected _cumulativeFee: number;
     protected _cumulativeProfit: number;
-    protected _unrealizedProfit: number;
     protected _losscutCount: number;
     private _initialSize;
     private _currentSize;
-    private _losscutPrice;
-    private _openSide;
     private _openPrice;
     private _closePrice;
-    private _openOrder;
-    private _closeOrder;
+    private _openOrder?;
+    private _closeOrder?;
+    private _losscutOrder?;
     protected _positionState: PositionStateClass;
-    private _orderLock;
     private _bestBid;
     private _previousBid;
     private _bestAsk;
@@ -64,13 +63,19 @@ export declare abstract class BasePositionClass {
     private _maxAsk;
     onOpened?: (pos: BasePositionClass) => void;
     onClosed?: (pos: BasePositionClass) => void;
+    onDoneLosscut?: (pos: BasePositionClass) => void;
     onOpenOrderCanceled?: (pos: BasePositionClass) => void;
     onCloseOrderCanceled?: (pos: BasePositionClass) => void;
-    private _checkOpen?;
-    private _checkClose?;
+    onLosscutOrderCanceled?: (pos: BasePositionClass) => void;
+    private _checkOpen;
+    private _checkClose;
+    private _checkLosscut?;
     private _checkOpenCancel?;
     private _checkCloseCancel?;
-    private _checkLosscut?;
+    private _checkLosscutCancel?;
+    private _getOpenOrder;
+    private _getCloseOrder;
+    private _getLosscutOrder?;
     constructor(params: BasePositionParameters);
     open(): Promise<void>;
     abstract doOpen(): Promise<string>;
@@ -80,6 +85,10 @@ export declare abstract class BasePositionClass {
     abstract doCancel(): Promise<void>;
     losscut(): Promise<void>;
     updateTicker(ticker: Ticker): void;
+    private updateOpenOrder;
+    private updateCloseOrder;
+    private updateLosscutOrder;
+    private setClose;
     updateOrder(order: Order): void;
     get profit(): number;
     get unrealizedProfit(): number;
@@ -100,11 +109,10 @@ export declare abstract class BasePositionClass {
     get minAsk(): number;
     set bestAsk(value: number);
     get state(): PositionStateClass;
-    get losscutPrice(): number;
     get currentOpenPrice(): number;
     get currentClosePrice(): number;
     get currentSize(): number;
-    get openOrder(): BaseOrderClass;
-    get closeOrder(): BaseOrderClass;
+    get openOrder(): BaseOrderClass | undefined;
+    get closeOrder(): BaseOrderClass | undefined;
     private lock;
 }

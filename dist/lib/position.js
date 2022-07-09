@@ -13,19 +13,17 @@ exports.BasePositionClass = void 0;
 const positionState_1 = require("./positionState");
 class BasePositionClass {
     constructor(params) {
+        this._orderLock = false;
         this._backtestMode = false;
         this._closeCount = 0;
         this._cumulativeFee = 0;
         this._cumulativeProfit = 0;
-        this._unrealizedProfit = 0;
         this._losscutCount = 0;
         // Position
         this._initialSize = 0;
         this._currentSize = 0;
-        this._losscutPrice = 0;
         this._openPrice = 0;
         this._closePrice = 0;
-        this._orderLock = false;
         this._bestBid = 0;
         this._previousBid = 0;
         this._bestAsk = 0;
@@ -40,15 +38,15 @@ class BasePositionClass {
         this._maxAsk = 0;
         this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
-        this._openOrder = params.openOrder;
-        this._closeOrder = params.closeOrder;
-        this._openSide = params.openOrder.side;
-        this._losscutPrice = params.losscutPrice;
+        this._getOpenOrder = params.getOpenOrder;
+        this._getCloseOrder = params.getCloseOrder;
+        this._getLosscutOrder = params.getLossCutOrder;
         this._checkOpen = params.checkOpen;
         this._checkClose = params.checkClose;
+        this._checkLosscut = params.checkLosscut;
         this._checkCloseCancel = params.checkCloseCancel;
         this._checkOpenCancel = params.checkOpenCancel;
-        this._checkLosscut = params.checkLosscut;
+        this._checkLosscutCancel = params.checkLosscutCancel;
     }
     open() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -102,21 +100,115 @@ class BasePositionClass {
         this.bestAsk = ticker.ask;
         this.bestBid = ticker.bid;
         if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
-            (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this))) {
+            (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this) ||
+                (this.state.enabledCloseOrderCancel && this._checkLosscutCancel && this._checkLosscutCancel(this)))) {
             console.log(this.currentOpenPrice, this.state.positionState, 'cancel');
             this.cancel();
         }
-        else if (this.state.enabledOpen && this._checkOpen && this._checkOpen(this)) {
+        else if (this.state.enabledOpen && this._checkOpen(this)) {
             console.log(this.currentOpenPrice, 'open');
+            this._openOrder = this._getOpenOrder(this);
             this.open();
         }
-        else if (this.state.enabledClose && this._checkClose && this._checkClose(this)) {
+        else if (this.state.enabledClose && this._checkClose(this)) {
             console.log(this.currentOpenPrice, 'close');
+            this._closeOrder = this._getCloseOrder(this);
             this.close();
         }
-        else if (this.state.enabledLosscut && this._checkLosscut && this._checkLosscut(this)) {
+        else if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
             console.log(this.currentOpenPrice, 'losscut');
+            this._losscutOrder = this._getLosscutOrder(this);
             this.losscut();
+        }
+    }
+    updateOpenOrder(order) {
+        if (!this._openOrder) {
+            return;
+        }
+        const size = this._openOrder.roundSize(order.size);
+        const filled = this._openOrder.roundSize(order.filledSize);
+        if (filled > 0) {
+            this._currentSize = filled;
+            this._initialSize = filled;
+            this._openPrice = this._openOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
+        }
+        if (filled !== size) {
+            this.state.setOrderCanceled();
+            if (this.onOpenOrderCanceled) {
+                this.onOpenOrderCanceled(this);
+            }
+            return;
+        }
+        if (filled === size) {
+            this.state.setOrderClosed();
+            if (this.onOpened) {
+                this.onOpened(this);
+            }
+            return;
+        }
+    }
+    updateCloseOrder(order) {
+        if (!this._closeOrder || !this._openOrder) {
+            return;
+        }
+        const size = this._closeOrder.roundSize(order.size);
+        const filled = this._closeOrder.roundSize(order.filledSize);
+        if (filled > 0) {
+            if (["close", "losscut"].includes(this.state.orderState)) {
+                this._currentSize = this._closeOrder.roundSize(this._currentSize - filled);
+                this._closePrice = this._closeOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
+            }
+        }
+        if (filled !== size) {
+            this.state.setOrderCanceled();
+            if (this.onCloseOrderCanceled) {
+                this.onCloseOrderCanceled(this);
+            }
+            return;
+        }
+        if (filled === size) {
+            this.setClose();
+        }
+    }
+    updateLosscutOrder(order) {
+        if (!this._losscutOrder || !this._openOrder) {
+            return;
+        }
+        const size = this._losscutOrder.roundSize(order.size);
+        const filled = this._losscutOrder.roundSize(order.filledSize);
+        if (filled > 0) {
+            this._currentSize = this._losscutOrder.roundSize(this._currentSize - filled);
+            this._closePrice = this._losscutOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
+        }
+        if (filled !== size) {
+            this.state.setOrderCanceled();
+            if (this.onLosscutOrderCanceled) {
+                this.onLosscutOrderCanceled(this);
+            }
+            return;
+        }
+        if (filled === size) {
+            if (this.state.isLosscut) {
+                this._losscutCount++;
+                if (this.onDoneLosscut) {
+                    this.onDoneLosscut(this);
+                }
+            }
+            this.setClose();
+        }
+    }
+    setClose() {
+        if (!this._openOrder) {
+            return;
+        }
+        this._cumulativeProfit += this._initialSize *
+            (this._openOrder.side === 'buy' ? (this._closePrice - this._openPrice) : (this._openPrice - this._closePrice));
+        this._initialSize = 0;
+        this._currentSize = 0;
+        this._closeCount++;
+        this.state.setOrderClosed();
+        if (this.onClosed) {
+            this.onClosed(this);
         }
     }
     updateOrder(order) {
@@ -126,72 +218,30 @@ class BasePositionClass {
         if (order.orderID !== this.state.orderID) {
             return;
         }
-        const size = this.state.orderState === "open" ? this._openOrder.roundSize(order.size) : this._closeOrder.roundSize(order.size);
-        const filled = this.state.orderState === "open" ? this._openOrder.roundSize(order.filledSize) : this._closeOrder.roundSize(order.filledSize);
-        if (filled > 0) {
-            if (this.state.orderState === "open") {
-                this._currentSize = filled;
-                this._initialSize = filled;
-                this._openPrice = this._openOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
-            }
-            if (["close", "losscut"].includes(this.state.orderState)) {
-                this._currentSize = this._closeOrder.roundSize(this._currentSize - filled);
-                this._closePrice = this._closeOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
-            }
+        if (this.state.orderState === "open") {
+            this.updateOpenOrder(order);
         }
-        if (filled !== size) {
-            if (this.state.orderState === "open") {
-                this.state.setOrderCanceled();
-                if (this.onOpenOrderCanceled) {
-                    this.onOpenOrderCanceled(this);
-                }
-                return;
-            }
-            if (this.state.orderState === "losscut") {
-                return;
-            }
-            if (this.state.orderState === "close") {
-                this.state.setOrderCanceled();
-                if (this.state.isLosscut) {
-                    // this.close()
-                }
-                if (this.onCloseOrderCanceled) {
-                    this.onCloseOrderCanceled(this);
-                }
-                return;
-            }
+        else if (this.state.orderState === "close") {
+            this.updateCloseOrder(order);
         }
-        if (filled === size) {
-            if (this.state.orderState === "open") {
-                this.state.setOrderClosed();
-                if (this.onOpened) {
-                    this.onOpened(this);
-                }
-                return;
-            }
-            if (["losscut", "close"].includes(this.state.orderState)) {
-                if (this.state.isLosscut) {
-                    this._losscutCount++;
-                }
-                this._cumulativeProfit += this._initialSize *
-                    (this._openSide === 'buy' ? (this._closePrice - this._openPrice) : (this._openPrice - this._closePrice));
-                this._initialSize = 0;
-                this._currentSize = 0;
-                this._unrealizedProfit = 0;
-                this._closeCount++;
-                this.state.setOrderClosed();
-                if (this.onClosed) {
-                    this.onClosed(this);
-                }
-                return;
-            }
+        else if (this.state.orderState === "losscut") {
+            this.updateLosscutOrder(order);
         }
     }
     get profit() {
         return this._cumulativeProfit - this._cumulativeFee;
     }
     get unrealizedProfit() {
-        return this._unrealizedProfit;
+        let result = 0;
+        if (this._openOrder && this._currentSize > 0) {
+            if (this._openOrder.side === 'buy') {
+                result = (this.bestBid - this._openPrice) * this._currentSize;
+            }
+            else {
+                result = (this._openPrice - this.bestAsk) * this._currentSize;
+            }
+        }
+        return result;
     }
     get closeCount() {
         return this._closeCount;
@@ -230,9 +280,6 @@ class BasePositionClass {
             this._minBid = value;
             this._maxBid = value;
         }
-        if (this._currentSize > 0 && this._openSide === 'buy') {
-            this._unrealizedProfit = (value - this._openPrice) * this._currentSize;
-        }
     }
     get bestAsk() {
         return this._bestAsk;
@@ -265,15 +312,9 @@ class BasePositionClass {
             this._minAsk = value;
             this._maxAsk = value;
         }
-        if (this._currentSize > 0 && this._openSide === 'sell') {
-            this._unrealizedProfit = (this._openPrice - value) * this._currentSize;
-        }
     }
     get state() {
         return this._positionState;
-    }
-    get losscutPrice() {
-        return this._losscutPrice;
     }
     get currentOpenPrice() {
         return this._openPrice;
