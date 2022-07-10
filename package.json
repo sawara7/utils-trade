@@ -8,6 +8,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
+    "clean": "npm install --save-dev rimraf && rimraf package-lock.json && rimraf node_modules && npm install && tsc",
     "build": "tsc",
     "test": "jest"
   },
@@ -21,10 +22,11 @@
   },
   "author": "sawara",
   "license": "MIT",
-  "bundleDependencies": false,
+  "bundleDependencies": [],
   "devDependencies": {
     "@types/jest": "^27.5.1",
     "jest": "^28.1.0",
+    "rimraf": "^3.0.2",
     "ts-jest": "^28.0.2",
     "typescript": "^4.6.4"
   },

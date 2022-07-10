@@ -1,3 +1,4 @@
+import { UUIDInstanceClass } from "my-utils";
 import { BaseOrderClass } from "..";
 import { PositionStateClass } from "./positionState";
 export interface Ticker {
@@ -34,7 +35,7 @@ export interface BasePositionResponse {
     success: boolean;
     message?: string;
 }
-export declare abstract class BasePositionClass {
+export declare abstract class BasePositionClass extends UUIDInstanceClass {
     private _orderLock;
     protected _backtestMode: boolean;
     protected _closeCount: number;

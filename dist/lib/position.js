@@ -10,9 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasePositionClass = void 0;
+const my_utils_1 = require("my-utils");
 const positionState_1 = require("./positionState");
-class BasePositionClass {
+class BasePositionClass extends my_utils_1.UUIDInstanceClass {
     constructor(params) {
+        super();
         this._orderLock = false;
         this._backtestMode = false;
         this._closeCount = 0;

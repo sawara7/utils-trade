@@ -1,3 +1,4 @@
+import { UUIDInstanceClass } from "my-utils";
 import { MarketInfo, OrderSide, OrderType } from "./definition";
 export interface BaseOrderSettings {
     clientID?: string;
@@ -8,7 +9,7 @@ export interface BaseOrderSettings {
     price?: number;
     postOnly?: boolean;
 }
-export declare class BaseOrderClass {
+export declare class BaseOrderClass extends UUIDInstanceClass {
     private _market;
     private _type;
     private _side;

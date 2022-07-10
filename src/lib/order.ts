@@ -1,3 +1,4 @@
+import { UUIDInstanceClass } from "my-utils"
 import {
     MarketInfo,
     OrderSide,
@@ -14,7 +15,7 @@ export interface BaseOrderSettings {
     postOnly?: boolean
 }
 
-export class BaseOrderClass {
+export class BaseOrderClass extends UUIDInstanceClass {
     private _market: MarketInfo
     private _type: OrderType
     private _side: OrderSide
@@ -23,6 +24,7 @@ export class BaseOrderClass {
     private _postOnly: boolean
 
     constructor (params: BaseOrderSettings) {
+        super()
         this._market = params.market
         this._type = params.type
         this._side = params.side

@@ -1,3 +1,4 @@
+import { UUIDInstanceClass } from "my-utils"
 import { BaseOrderClass, OrderSide } from ".."
 import { PositionStateClass } from "./positionState"
 
@@ -39,7 +40,7 @@ export interface BasePositionResponse {
     message?: string
 }
 
-export abstract class BasePositionClass {
+export abstract class BasePositionClass extends UUIDInstanceClass {
     private _orderLock: boolean = false
 
     protected _backtestMode: boolean = false
@@ -99,7 +100,8 @@ export abstract class BasePositionClass {
     private _getCloseOrder: (pos: BasePositionClass) => BaseOrderClass
     private _getLosscutOrder?: (pos: BasePositionClass) => BaseOrderClass
 
-    constructor(params: BasePositionParameters){
+    constructor(params: BasePositionParameters) {
+        super()
         this._positionState = new PositionStateClass()
         this._backtestMode = params.backtestMode? params.backtestMode: false
 

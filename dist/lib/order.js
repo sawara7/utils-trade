@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseOrderClass = void 0;
-class BaseOrderClass {
+const my_utils_1 = require("my-utils");
+class BaseOrderClass extends my_utils_1.UUIDInstanceClass {
     constructor(params) {
+        super();
         this._market = params.market;
         this._type = params.type;
         this._side = params.side;
