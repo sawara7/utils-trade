@@ -27,17 +27,7 @@ class BasePositionClass extends my_utils_1.UUIDInstanceClass {
         this._openPrice = 0;
         this._closePrice = 0;
         this._bestBid = 0;
-        this._previousBid = 0;
         this._bestAsk = 0;
-        this._previousAsk = 0;
-        this._ema100Bid = 0;
-        this._ema100Ask = 0;
-        this._ema1000Bid = 0;
-        this._ema1000Ask = 0;
-        this._minBid = 0;
-        this._minAsk = 0;
-        this._maxBid = 0;
-        this._maxAsk = 0;
         this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
         this._getOpenOrder = params.getOpenOrder;
@@ -254,66 +244,14 @@ class BasePositionClass extends my_utils_1.UUIDInstanceClass {
     get bestBid() {
         return this._bestBid;
     }
-    get previousBid() {
-        return this._previousBid;
-    }
-    get emaBid100() {
-        return this._ema100Bid;
-    }
-    get emaBid1000() {
-        return this._ema1000Bid;
-    }
-    get maxBid() {
-        return this._maxBid;
-    }
-    get minBid() {
-        return this._minBid;
-    }
     set bestBid(value) {
-        this._previousBid = this._bestBid;
         this._bestBid = value;
-        this._ema100Bid = this._ema100Bid * (1 - 1 / 100) + value * 1 / 100;
-        this._ema1000Bid = this._ema1000Bid * (1 - 1 / 1000) + value * 1 / 1000;
-        if (this._positionState.positionState === "opened") {
-            this._minBid = this._minBid > value ? value : this._minBid;
-            this._maxBid = this._maxBid < value ? value : this._maxBid;
-        }
-        else {
-            this._minBid = value;
-            this._maxBid = value;
-        }
     }
     get bestAsk() {
         return this._bestAsk;
     }
-    get previousAsk() {
-        return this._previousAsk;
-    }
-    get emaAsk100() {
-        return this._ema100Ask;
-    }
-    get emaAsk1000() {
-        return this._ema1000Ask;
-    }
-    get maxAsk() {
-        return this._maxAsk;
-    }
-    get minAsk() {
-        return this._minAsk;
-    }
     set bestAsk(value) {
-        this._previousAsk = this._bestAsk;
         this._bestAsk = value;
-        this._ema100Ask = this._ema100Ask * (1 - 1 / 100) + value * 1 / 100;
-        this._ema1000Ask = this._ema1000Ask * (1 - 1 / 1000) + value * 1 / 1000;
-        if (this._positionState.positionState === "opened") {
-            this._minAsk = this._minAsk > value ? value : this._minAsk;
-            this._maxAsk = this._maxAsk < value ? value : this._maxAsk;
-        }
-        else {
-            this._minAsk = value;
-            this._maxAsk = value;
-        }
     }
     get state() {
         return this._positionState;

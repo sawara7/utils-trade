@@ -65,17 +65,7 @@ export abstract class BasePositionClass extends UUIDInstanceClass {
     protected _positionState: PositionStateClass
 
     private _bestBid: number = 0
-    private _previousBid: number = 0
     private _bestAsk: number = 0
-    private _previousAsk: number = 0
-    private _ema100Bid: number = 0
-    private _ema100Ask: number = 0
-    private _ema1000Bid: number = 0
-    private _ema1000Ask: number = 0
-    private _minBid: number = 0
-    private _minAsk: number = 0
-    private _maxBid: number = 0
-    private _maxAsk: number = 0
 
     // Events
     public onOpened?: (pos: BasePositionClass) => void
@@ -316,78 +306,16 @@ export abstract class BasePositionClass extends UUIDInstanceClass {
         return this._bestBid
     }
 
-    get previousBid(): number {
-        return this._previousBid
-    }
-
-    get emaBid100(): number {
-        return this._ema100Bid
-    }
-
-    get emaBid1000(): number {
-        return this._ema1000Bid
-    }
-
-    get maxBid(): number {
-        return this._maxBid
-    }
-
-    get minBid(): number {
-        return this._minBid
-    }
-
     set bestBid(value: number) {
-        this._previousBid = this._bestBid
         this._bestBid = value
-        this._ema100Bid = this._ema100Bid * (1-1/100) + value * 1/100
-        this._ema1000Bid = this._ema1000Bid * (1-1/1000) + value * 1/1000
-
-        if (this._positionState.positionState === "opened") {
-            this._minBid = this._minBid > value ? value: this._minBid
-            this._maxBid = this._maxBid < value ? value: this._maxBid    
-        } else {
-            this._minBid = value
-            this._maxBid = value
-        }
     }
 
     get bestAsk(): number {
         return this._bestAsk
     }
 
-    get previousAsk(): number {
-        return this._previousAsk
-    }
-
-    get emaAsk100(): number {
-        return this._ema100Ask
-    }
-
-    get emaAsk1000(): number {
-        return this._ema1000Ask
-    }
-
-    get maxAsk(): number {
-        return this._maxAsk
-    }
-
-    get minAsk(): number {
-        return this._minAsk
-    }
-
     set bestAsk(value: number) {
-        this._previousAsk = this._bestAsk
         this._bestAsk = value
-        this._ema100Ask = this._ema100Ask * (1-1/100) + value * 1/100
-        this._ema1000Ask = this._ema1000Ask * (1-1/1000) + value * 1/1000
-
-        if (this._positionState.positionState === "opened") {
-            this._minAsk = this._minAsk > value ? value: this._minAsk
-            this._maxAsk = this._maxAsk < value ? value: this._maxAsk    
-        } else {
-            this._minAsk = value
-            this._maxAsk = value
-        }
     }
 
     get state(): PositionStateClass {

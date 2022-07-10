@@ -1,3 +1,8 @@
+export const TickerTypeList = [
+  "ask",
+  "bid"
+] as const;
+export type TickerType = typeof TickerTypeList[number];
 
 export const OrderSideList = [
     "buy",

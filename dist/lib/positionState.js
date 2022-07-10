@@ -17,6 +17,7 @@ class PositionStateClass {
         this._isLosscut = false;
         this._positionState = "neutral";
         this._orderState = "none";
+        this._orderStateTime = {};
         this._canceling = false;
     }
     setLosscut() {
@@ -24,13 +25,13 @@ class PositionStateClass {
     }
     setBeforePlaceOrder(od) {
         if (this.enabledOpen && od === "open") {
-            this._orderState = "open";
+            this.orderState = "open";
         }
         else if (this.enabledClose && od === "close") {
-            this._orderState = "close";
+            this.orderState = "close";
         }
         else if (this.enabledClose && od === "losscut" && this.isLosscut) {
-            this._orderState = "losscut";
+            this.orderState = "losscut";
         }
         else {
             throw new Error("place order error.");
@@ -62,7 +63,7 @@ class PositionStateClass {
             this._positionState = "closed";
             this._isLosscut = false;
         }
-        this._orderState = "none";
+        this.orderState = "none";
         this._orderID = undefined;
     }
     setOrderCanceled() {
@@ -71,11 +72,11 @@ class PositionStateClass {
             // throw new Error("order canceled error.")
         }
         this._canceling = false;
-        this._orderState = "none";
+        this.orderState = "none";
         this._orderID = undefined;
     }
     setOrderFailed() {
-        this._orderState = "none";
+        this.orderState = "none";
         this._orderID = undefined;
     }
     setOrderCancelFailed() {
@@ -89,6 +90,15 @@ class PositionStateClass {
     }
     get orderState() {
         return this._orderState;
+    }
+    set orderState(s) {
+        if (this._orderState !== s) {
+            this._orderState = s;
+            this._orderStateTime[s] = Date.now();
+        }
+    }
+    getOrderStateTime(s) {
+        return this._orderStateTime[s];
     }
     get orderCanceling() {
         return this._canceling;
@@ -129,6 +139,7 @@ class PositionStateClass {
         this._positionState = "neutral";
         this._isLosscut = false;
         this._orderState = "none";
+        this._orderStateTime = {};
         this._canceling = false;
         this._orderID = undefined;
     }

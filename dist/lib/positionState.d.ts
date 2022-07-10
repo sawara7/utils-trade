@@ -6,6 +6,7 @@ export declare class PositionStateClass {
     private _isLosscut;
     private _positionState;
     private _orderState;
+    private _orderStateTime;
     private _canceling;
     private _orderID;
     setLosscut(): void;
@@ -19,6 +20,8 @@ export declare class PositionStateClass {
     get isLosscut(): boolean;
     get positionState(): PositionState;
     get orderState(): PositionOrder;
+    private set orderState(value);
+    getOrderStateTime(s: PositionOrder): number | undefined;
     get orderCanceling(): boolean;
     get orderID(): string | undefined;
     get isNoOrder(): boolean;

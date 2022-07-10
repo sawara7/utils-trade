@@ -17,3 +17,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./lib/order"), exports);
 __exportStar(require("./lib/position"), exports);
 __exportStar(require("./lib/definition"), exports);
+__exportStar(require("./lib/ticker"), exports);
