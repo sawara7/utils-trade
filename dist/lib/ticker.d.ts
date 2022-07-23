@@ -1,6 +1,6 @@
-import { UUIDInstanceClass } from "my-utils";
-import { Ticker } from "./position";
-export declare class TickerClass extends UUIDInstanceClass {
+import { BaseObjectClass } from "my-utils";
+import { Ticker } from "./types";
+export declare class TickerClass extends BaseObjectClass {
     private _sequenceList;
     constructor(intervalSec: number, sequenceNum: number);
     update(ticker: Ticker): void;

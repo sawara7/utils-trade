@@ -13,6 +13,15 @@ export const PositionOrderList = [
   ] as const
 export type PositionOrder = typeof PositionOrderList[number]
 
+export interface PositionStateVariables {
+    isLosscut: boolean
+    positionState: PositionState
+    orderState: PositionOrder
+    orderStateTime: {[s: string]: number}
+    canceling: boolean
+    orderID: string | undefined
+}
+
 export class PositionStateClass {
     private _isLosscut: boolean = false
     private _positionState: PositionState = "neutral"
@@ -20,6 +29,26 @@ export class PositionStateClass {
     private _orderStateTime: {[s: string]: number} = {}
     private _canceling: boolean = false
     private _orderID: string | undefined
+
+    public import(value: PositionStateVariables) {
+        this._isLosscut = value.isLosscut
+        this._positionState = value.positionState 
+        this._orderState = value.orderState
+        this._orderStateTime = value.orderStateTime
+        this._canceling = value.canceling 
+        this._orderID = value.orderID
+    }
+
+    public export(): PositionStateVariables {
+        return {
+            isLosscut: this.isLosscut,
+            positionState: this._positionState,
+            orderState: this._orderState,
+            orderStateTime: this._orderStateTime,
+            canceling: this._canceling,
+            orderID: this._orderID
+        }
+    }
 
     public setLosscut() {
         this._isLosscut = true

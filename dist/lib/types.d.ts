@@ -15,3 +15,21 @@ export interface MarketInfo {
     priceResolution: number;
     minOrderSize: number;
 }
+export interface Ticker {
+    time: string;
+    bid: number;
+    ask: number;
+}
+export interface Order {
+    orderID: string;
+    clientId?: string;
+    market: string;
+    type: string;
+    side: string;
+    size: number;
+    price: number;
+    status: "closed" | string;
+    filledSize: number;
+    remainingSize: number;
+    avgFillPrice: number;
+}

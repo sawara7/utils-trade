@@ -1,9 +1,12 @@
-import { UUIDInstanceClass } from "my-utils"
+import {
+    BaseObjectClass
+} from "my-utils"
+
 import {
     MarketInfo,
     OrderSide,
     OrderType
-} from "./definition"
+} from "./types"
 
 export interface BaseOrderSettings {
     clientID?: string
@@ -15,7 +18,18 @@ export interface BaseOrderSettings {
     postOnly?: boolean
 }
 
-export class BaseOrderClass extends UUIDInstanceClass {
+export interface BaseOrderVariables {
+    _clientID: string
+    _market: MarketInfo
+    _type: OrderType
+    _side: OrderSide
+    _size: number
+    _price?: number
+    _postOnly: boolean
+}
+
+export class BaseOrderClass extends BaseObjectClass {
+    private _clientID: string
     private _market: MarketInfo
     private _type: OrderType
     private _side: OrderSide
@@ -23,14 +37,46 @@ export class BaseOrderClass extends UUIDInstanceClass {
     private _price?: number
     private _postOnly: boolean
 
-    constructor (params: BaseOrderSettings) {
+    constructor (params?: BaseOrderSettings) {
         super()
-        this._market = params.market
-        this._type = params.type
-        this._side = params.side
-        this._size = params.size
-        this._price = params.price
-        this._postOnly = params.postOnly? true: false
+        this._clientID = params && params.clientID? params.clientID: ''
+        this._market = params? params.market: {
+            name: '',
+            type: 'spot',
+            crossOrder: false,
+            sizeResolution: 0,
+            priceResolution: 0,
+            minOrderSize: 0
+        }
+        this._type = params? params.type: 'limit'
+        this._side = params? params.side: 'buy'
+        this._size = params? params.size: 0
+        this._price = params? params.price: 0
+        this._postOnly = params && params.postOnly? true: false
+    }
+
+    public import(jsn: any) {
+        super.import(jsn)
+        const v = jsn as BaseOrderVariables
+        this._clientID = v._clientID
+        this._market = v._market
+        this._type = v._type
+        this._side = v._side
+        this._size = v._size
+        this._price = v._price
+        this._postOnly = v._postOnly
+    }
+
+    public export(): any {
+        const v = super.export() as BaseOrderVariables
+        v._clientID = this._clientID
+        v._market = this._market
+        v._type = this._type
+        v._side = this._side
+        v._size = this._size
+        v._price = this._price
+        v._postOnly = this._postOnly
+        return v
     }
 
     get market(): MarketInfo {

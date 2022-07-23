@@ -20,6 +20,24 @@ class PositionStateClass {
         this._orderStateTime = {};
         this._canceling = false;
     }
+    import(value) {
+        this._isLosscut = value.isLosscut;
+        this._positionState = value.positionState;
+        this._orderState = value.orderState;
+        this._orderStateTime = value.orderStateTime;
+        this._canceling = value.canceling;
+        this._orderID = value.orderID;
+    }
+    export() {
+        return {
+            isLosscut: this.isLosscut,
+            positionState: this._positionState,
+            orderState: this._orderState,
+            orderStateTime: this._orderStateTime,
+            canceling: this._canceling,
+            orderID: this._orderID
+        };
+    }
     setLosscut() {
         this._isLosscut = true;
     }

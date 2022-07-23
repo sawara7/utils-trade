@@ -8,8 +8,9 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "clean": "npm install --save-dev rimraf && rimraf package-lock.json && rimraf node_modules && npm install && tsc",
-    "build": "tsc",
+    "install-rimraf": "npm install --save-dev rimraf",
+    "cleanup": "rimraf package-lock.json && rimraf dist && rimraf node_modules",
+    "build": "npm run install-rimraf && npm run cleanup && npm install && tsc",
     "test": "jest"
   },
   "jest": {

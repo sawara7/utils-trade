@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TickerClass = void 0;
 const my_utils_1 = require("my-utils");
-class TickerClass extends my_utils_1.UUIDInstanceClass {
+class TickerClass extends my_utils_1.BaseObjectClass {
     constructor(intervalSec, sequenceNum) {
         super();
         this._sequenceList = new my_utils_1.SequenceList(intervalSec, sequenceNum);

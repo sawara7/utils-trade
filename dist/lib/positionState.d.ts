@@ -2,6 +2,16 @@ export declare const PositionStateList: readonly ["neutral", "opened", "closed"]
 export declare type PositionState = typeof PositionStateList[number];
 export declare const PositionOrderList: readonly ["none", "open", "close", "losscut"];
 export declare type PositionOrder = typeof PositionOrderList[number];
+export interface PositionStateVariables {
+    isLosscut: boolean;
+    positionState: PositionState;
+    orderState: PositionOrder;
+    orderStateTime: {
+        [s: string]: number;
+    };
+    canceling: boolean;
+    orderID: string | undefined;
+}
 export declare class PositionStateClass {
     private _isLosscut;
     private _positionState;
@@ -9,6 +19,8 @@ export declare class PositionStateClass {
     private _orderStateTime;
     private _canceling;
     private _orderID;
+    import(value: PositionStateVariables): void;
+    export(): PositionStateVariables;
     setLosscut(): void;
     setBeforePlaceOrder(od: PositionOrder): void;
     setAfterPlaceOrder(id: string): void;

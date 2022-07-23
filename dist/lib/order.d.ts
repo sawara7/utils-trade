@@ -1,5 +1,5 @@
-import { UUIDInstanceClass } from "my-utils";
-import { MarketInfo, OrderSide, OrderType } from "./definition";
+import { BaseObjectClass } from "my-utils";
+import { MarketInfo, OrderSide, OrderType } from "./types";
 export interface BaseOrderSettings {
     clientID?: string;
     market: MarketInfo;
@@ -9,14 +9,26 @@ export interface BaseOrderSettings {
     price?: number;
     postOnly?: boolean;
 }
-export declare class BaseOrderClass extends UUIDInstanceClass {
+export interface BaseOrderVariables {
+    _clientID: string;
+    _market: MarketInfo;
+    _type: OrderType;
+    _side: OrderSide;
+    _size: number;
+    _price?: number;
+    _postOnly: boolean;
+}
+export declare class BaseOrderClass extends BaseObjectClass {
+    private _clientID;
     private _market;
     private _type;
     private _side;
     private _size;
     private _price?;
     private _postOnly;
-    constructor(params: BaseOrderSettings);
+    constructor(params?: BaseOrderSettings);
+    import(jsn: any): void;
+    export(): any;
     get market(): MarketInfo;
     get type(): OrderType;
     get side(): OrderSide;

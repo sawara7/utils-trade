@@ -11,8 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasePositionClass = void 0;
 const my_utils_1 = require("my-utils");
+const __1 = require("..");
 const positionState_1 = require("./positionState");
-class BasePositionClass extends my_utils_1.UUIDInstanceClass {
+class BasePositionClass extends my_utils_1.BaseObjectClass {
     constructor(params) {
         super();
         this._orderLock = false;
@@ -39,6 +40,61 @@ class BasePositionClass extends my_utils_1.UUIDInstanceClass {
         this._checkCloseCancel = params.checkCloseCancel;
         this._checkOpenCancel = params.checkOpenCancel;
         this._checkLosscutCancel = params.checkLosscutCancel;
+    }
+    import(jsn) {
+        super.import(jsn);
+        const v = jsn;
+        this._orderLock = v._orderLock;
+        this._backtestMode = v._backtestMode;
+        this._closeCount = v._closeCount;
+        this._cumulativeFee = v._cumulativeFee;
+        this._cumulativeProfit = v._cumulativeProfit;
+        this._losscutCount = v._losscutCount;
+        this._initialSize = v._initialSize;
+        this._currentSize = v._currentSize;
+        this._openPrice = v._openPrice;
+        this._closePrice = v._closeCount;
+        if (v._openOrder) {
+            this._openOrder = new __1.BaseOrderClass();
+            this._openOrder.import(v._openOrder);
+        }
+        if (v._closeOrder) {
+            this._closeOrder = new __1.BaseOrderClass();
+            this._closeOrder.import(v._closeOrder);
+        }
+        if (v._losscutOrder) {
+            this._losscutOrder = new __1.BaseOrderClass();
+            this._losscutOrder.import(v._losscutOrder);
+        }
+        this._positionState.import(v._positionState);
+        this._bestBid = v._bestBid;
+        this._bestAsk = v._bestAsk;
+    }
+    export() {
+        const v = super.export();
+        v._orderLock = this._orderLock;
+        v._backtestMode = this._backtestMode;
+        v._closeCount = this._closeCount;
+        v._cumulativeFee = this._cumulativeFee;
+        v._cumulativeProfit = this._cumulativeProfit;
+        v._losscutCount = this._losscutCount;
+        v._initialSize = this._initialSize;
+        v._currentSize = this._currentSize;
+        v._openPrice = this._openPrice;
+        v._closePrice = this._closeCount;
+        if (this._openOrder) {
+            v._openOrder = this._openOrder.export();
+        }
+        if (this._closeOrder) {
+            v._closeOrder = this._closeOrder.export();
+        }
+        if (this._losscutOrder) {
+            v._losscutOrder = this._losscutOrder.export();
+        }
+        v._positionState = this._positionState.export();
+        v._bestBid = this._bestBid;
+        v._bestAsk = this._bestAsk;
+        return v;
     }
     open() {
         return __awaiter(this, void 0, void 0, function* () {

@@ -1,7 +1,7 @@
-import { SequenceList, SequenceListType, UUIDInstanceClass } from "my-utils"
-import { Ticker } from "./position"
+import { SequenceList, SequenceListType, BaseObjectClass } from "my-utils"
+import { Ticker } from "./types"
 
-export class TickerClass extends UUIDInstanceClass {
+export class TickerClass extends BaseObjectClass {
     private _sequenceList: SequenceList
 
     constructor(intervalSec: number, sequenceNum: number) {

@@ -1,24 +1,6 @@
-import { UUIDInstanceClass } from "my-utils";
-import { BaseOrderClass } from "..";
-import { PositionStateClass } from "./positionState";
-export interface Ticker {
-    time: string;
-    bid: number;
-    ask: number;
-}
-export interface Order {
-    orderID: string;
-    clientId?: string;
-    market: string;
-    type: string;
-    side: string;
-    size: number;
-    price: number;
-    status: "closed" | string;
-    filledSize: number;
-    remainingSize: number;
-    avgFillPrice: number;
-}
+import { BaseObjectClass } from "my-utils";
+import { BaseOrderClass, BaseOrderVariables, Order, Ticker } from "..";
+import { PositionStateClass, PositionStateVariables } from "./positionState";
 export interface BasePositionParameters {
     backtestMode?: boolean;
     getOpenOrder: (pos: BasePositionClass) => BaseOrderClass;
@@ -31,11 +13,29 @@ export interface BasePositionParameters {
     checkCloseCancel?: (pos: BasePositionClass) => boolean;
     checkLosscutCancel?: (pos: BasePositionClass) => boolean;
 }
+export interface BasePositionVariables {
+    _orderLock: boolean;
+    _backtestMode: boolean;
+    _closeCount: number;
+    _cumulativeFee: number;
+    _cumulativeProfit: number;
+    _losscutCount: number;
+    _initialSize: number;
+    _currentSize: number;
+    _openPrice: number;
+    _closePrice: number;
+    _openOrder?: BaseOrderVariables;
+    _closeOrder?: BaseOrderVariables;
+    _losscutOrder?: BaseOrderVariables;
+    _positionState: PositionStateVariables;
+    _bestBid: number;
+    _bestAsk: number;
+}
 export interface BasePositionResponse {
     success: boolean;
     message?: string;
 }
-export declare abstract class BasePositionClass extends UUIDInstanceClass {
+export declare abstract class BasePositionClass extends BaseObjectClass {
     private _orderLock;
     protected _backtestMode: boolean;
     protected _closeCount: number;
@@ -68,6 +68,8 @@ export declare abstract class BasePositionClass extends UUIDInstanceClass {
     private _getCloseOrder;
     private _getLosscutOrder?;
     constructor(params: BasePositionParameters);
+    import(jsn: any): void;
+    export(): any;
     open(): Promise<void>;
     abstract doOpen(): Promise<string>;
     close(): Promise<void>;

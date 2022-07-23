@@ -1,26 +1,6 @@
-import { UUIDInstanceClass } from "my-utils"
-import { BaseOrderClass, OrderSide } from ".."
-import { PositionStateClass } from "./positionState"
-
-export interface Ticker {
-    time: string
-    bid: number
-    ask: number
-}
-
-export interface Order {
-    orderID: string
-    clientId?: string
-    market: string
-    type: string
-    side: string
-    size: number
-    price: number
-    status: "closed" | string
-    filledSize: number
-    remainingSize: number
-    avgFillPrice: number
-}
+import { BaseObjectClass } from "my-utils"
+import { BaseOrderClass, BaseOrderVariables, Order, Ticker } from ".."
+import { PositionStateClass, PositionStateVariables } from "./positionState"
 
 export interface BasePositionParameters {
     backtestMode?: boolean
@@ -35,12 +15,31 @@ export interface BasePositionParameters {
     checkLosscutCancel?: (pos: BasePositionClass) => boolean
 }
 
+export interface BasePositionVariables {
+    _orderLock: boolean
+    _backtestMode: boolean
+    _closeCount: number
+    _cumulativeFee: number
+    _cumulativeProfit: number
+    _losscutCount: number
+    _initialSize: number
+    _currentSize: number
+    _openPrice: number
+    _closePrice: number
+    _openOrder?: BaseOrderVariables
+    _closeOrder?: BaseOrderVariables
+    _losscutOrder?: BaseOrderVariables
+    _positionState: PositionStateVariables
+    _bestBid: number
+    _bestAsk: number
+}
+
 export interface BasePositionResponse {
     success: boolean,
     message?: string
 }
 
-export abstract class BasePositionClass extends UUIDInstanceClass {
+export abstract class BasePositionClass extends BaseObjectClass {
     private _orderLock: boolean = false
 
     protected _backtestMode: boolean = false
@@ -106,6 +105,63 @@ export abstract class BasePositionClass extends UUIDInstanceClass {
         this._checkCloseCancel = params.checkCloseCancel
         this._checkOpenCancel = params.checkOpenCancel
         this._checkLosscutCancel = params.checkLosscutCancel
+    }
+
+    public import(jsn: any) {
+        super.import(jsn)
+        const v = jsn as BasePositionVariables
+        this._orderLock = v._orderLock
+        this._backtestMode = v._backtestMode
+        this._closeCount = v._closeCount
+        this._cumulativeFee = v._cumulativeFee
+        this._cumulativeProfit = v._cumulativeProfit
+        this._losscutCount = v._losscutCount
+        this._initialSize = v._initialSize
+        this._currentSize = v._currentSize
+        this._openPrice = v._openPrice
+        this._closePrice = v._closeCount
+        if (v._openOrder) {
+            this._openOrder = new BaseOrderClass()
+            this._openOrder.import(v._openOrder)
+        }
+        if (v._closeOrder) {
+            this._closeOrder = new BaseOrderClass()
+            this._closeOrder.import(v._closeOrder)
+        }
+        if (v._losscutOrder) {
+            this._losscutOrder = new BaseOrderClass()
+            this._losscutOrder.import(v._losscutOrder)
+        }
+        this._positionState.import(v._positionState)
+        this._bestBid = v._bestBid
+        this._bestAsk = v._bestAsk
+    }
+
+    public export(): any {
+        const v = super.export() as BasePositionVariables
+        v._orderLock = this._orderLock 
+        v._backtestMode = this._backtestMode
+        v._closeCount = this._closeCount
+        v._cumulativeFee = this._cumulativeFee
+        v._cumulativeProfit = this._cumulativeProfit
+        v._losscutCount = this._losscutCount
+        v._initialSize = this._initialSize
+        v._currentSize = this._currentSize
+        v._openPrice = this._openPrice
+        v._closePrice = this._closeCount
+        if (this._openOrder) {
+            v._openOrder = this._openOrder.export()
+        }
+        if (this._closeOrder) {
+            v._closeOrder = this._closeOrder.export()
+        }
+        if (this._losscutOrder) {
+            v._losscutOrder = this._losscutOrder.export()
+        }
+        v._positionState = this._positionState.export() 
+        v._bestBid = this._bestBid
+        v._bestAsk = this._bestAsk
+        return v
     }
 
     public async open(): Promise<void> {
