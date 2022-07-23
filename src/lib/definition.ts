@@ -10,6 +10,10 @@ export const OrderSideList = [
   ] as const;
 export type OrderSide = typeof OrderSideList[number];
 
+export function getCloseSide(openSide: OrderSide): OrderSide {
+  return openSide === "buy"? "sell": "buy"
+}
+
 export const OrderTypeList = [
     "limit",
     "market"
