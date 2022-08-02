@@ -235,6 +235,12 @@ export abstract class BasePositionClass extends BaseObjectClass {
             console.log(this.currentOpenPrice, 'losscut')
             this._losscutOrder = this._getLosscutOrder(this)
             this.losscut()
+        } else if (this.state.enabledCloseOrderCancel && this._closeOrder &&
+            ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
+            (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))
+        ) {
+            this._closePrice = this._closeOrder.price
+            this.setClose()
         }
     }
 
