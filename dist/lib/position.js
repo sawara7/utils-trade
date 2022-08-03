@@ -159,20 +159,24 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
                 console.log(this.currentOpenPrice, 'open');
                 this._openOrder = this._getOpenOrder(this);
                 yield this.open();
-                this._currentSize = this._openOrder.size;
-                this._initialSize = this._openOrder.size;
-                this._openPrice = this._openOrder.price;
-                this.state.setOrderClosed();
-                if (this.onOpened) {
-                    this.onOpened(this);
+                if (this.state.orderState === "open") {
+                    this._currentSize = this._openOrder.size;
+                    this._initialSize = this._openOrder.size;
+                    this._openPrice = this._openOrder.price;
+                    this.state.setOrderClosed();
+                    if (this.onOpened) {
+                        this.onOpened(this);
+                    }
                 }
             }
             else if (this.state.enabledClose && this._checkClose(this)) {
                 console.log(this.currentOpenPrice, 'close');
                 this._closeOrder = this._getCloseOrder(this);
                 yield this.close();
-                this._closePrice = this._closeOrder.price;
-                this.setClose();
+                if (this.state.orderState === "close") {
+                    this.setClose();
+                    this._closePrice = this._closeOrder.price;
+                }
             }
             else if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
                 console.log(this.currentOpenPrice, 'losscut');
