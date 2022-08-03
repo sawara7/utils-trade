@@ -145,59 +145,61 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
         });
     }
     updateTicker(ticker) {
-        this.bestAsk = ticker.ask;
-        this.bestBid = ticker.bid;
-        if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
-            (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this) ||
-                (this.state.enabledCloseOrderCancel && this._checkLosscutCancel && this._checkLosscutCancel(this)))) {
-            console.log(this.currentOpenPrice, this.state.positionState, 'cancel');
-            this.cancel();
-            this.state.setOrderCanceled();
-        }
-        else if (this.state.enabledOpen && this._checkOpen(this)) {
-            console.log(this.currentOpenPrice, 'open');
-            this._openOrder = this._getOpenOrder(this);
-            this.open();
-            this._currentSize = this._openOrder.size;
-            this._initialSize = this._openOrder.size;
-            this._openPrice = this._openOrder.price;
-            this.state.setOrderClosed();
-            if (this.onOpened) {
-                this.onOpened(this);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.bestAsk = ticker.ask;
+            this.bestBid = ticker.bid;
+            if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
+                (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this) ||
+                    (this.state.enabledCloseOrderCancel && this._checkLosscutCancel && this._checkLosscutCancel(this)))) {
+                console.log(this.currentOpenPrice, this.state.positionState, 'cancel');
+                yield this.cancel();
+                this.state.setOrderCanceled();
             }
-        }
-        else if (this.state.enabledClose && this._checkClose(this)) {
-            console.log(this.currentOpenPrice, 'close');
-            this._closeOrder = this._getCloseOrder(this);
-            this.close();
-            this._closePrice = this._closeOrder.price;
-            this.setClose();
-        }
-        else if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
-            console.log(this.currentOpenPrice, 'losscut');
-            this._losscutOrder = this._getLosscutOrder(this);
-            this.losscut();
-            if (this._closeOrder)
+            else if (this.state.enabledOpen && this._checkOpen(this)) {
+                console.log(this.currentOpenPrice, 'open');
+                this._openOrder = this._getOpenOrder(this);
+                yield this.open();
+                this._currentSize = this._openOrder.size;
+                this._initialSize = this._openOrder.size;
+                this._openPrice = this._openOrder.price;
+                this.state.setOrderClosed();
+                if (this.onOpened) {
+                    this.onOpened(this);
+                }
+            }
+            else if (this.state.enabledClose && this._checkClose(this)) {
+                console.log(this.currentOpenPrice, 'close');
+                this._closeOrder = this._getCloseOrder(this);
+                yield this.close();
                 this._closePrice = this._closeOrder.price;
-            this.setClose();
-        }
-        else if (this.state.enabledCloseOrderCancel && this._closeOrder &&
-            ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
-                (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))) {
-            this._closePrice = this._closeOrder.price;
-            this.setClose();
-        }
-        else if (this.state.enabledOpenOrderCancel && this._openOrder &&
-            ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
-                (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))) {
-            this._currentSize = this._openOrder.size;
-            this._initialSize = this._openOrder.size;
-            this._openPrice = this._openOrder.roundPrice(this._openOrder.price);
-            this.state.setOrderClosed();
-            if (this.onOpened) {
-                this.onOpened(this);
+                this.setClose();
             }
-        }
+            else if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
+                console.log(this.currentOpenPrice, 'losscut');
+                this._losscutOrder = this._getLosscutOrder(this);
+                yield this.losscut();
+                if (this._closeOrder)
+                    this._closePrice = this._closeOrder.price;
+                this.setClose();
+            }
+            else if (this.state.enabledCloseOrderCancel && this._closeOrder &&
+                ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
+                    (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))) {
+                this._closePrice = this._closeOrder.price;
+                this.setClose();
+            }
+            else if (this.state.enabledOpenOrderCancel && this._openOrder &&
+                ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
+                    (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))) {
+                this._currentSize = this._openOrder.size;
+                this._initialSize = this._openOrder.size;
+                this._openPrice = this._openOrder.roundPrice(this._openOrder.price);
+                this.state.setOrderClosed();
+                if (this.onOpened) {
+                    this.onOpened(this);
+                }
+            }
+        });
     }
     updateOpenOrder(order) {
         if (!this._openOrder) {

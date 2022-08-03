@@ -77,7 +77,7 @@ export declare abstract class BasePositionClass extends BaseObjectClass {
     cancel(): Promise<void>;
     abstract doCancel(): Promise<void>;
     losscut(): Promise<void>;
-    updateTicker(ticker: Ticker): void;
+    updateTicker(ticker: Ticker): Promise<void>;
     private updateOpenOrder;
     private updateCloseOrder;
     private updateLosscutOrder;

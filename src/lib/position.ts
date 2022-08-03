@@ -214,7 +214,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
         }
     }
 
-    public updateTicker(ticker: Ticker) {
+    public async updateTicker(ticker: Ticker) {
         this.bestAsk = ticker.ask
         this.bestBid = ticker.bid
         if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
@@ -222,12 +222,12 @@ export abstract class BasePositionClass extends BaseObjectClass {
             (this.state.enabledCloseOrderCancel && this._checkLosscutCancel && this._checkLosscutCancel(this)))
         ){
             console.log(this.currentOpenPrice, this.state.positionState, 'cancel')
-            this.cancel()
+            await this.cancel()
             this.state.setOrderCanceled()
         } else if (this.state.enabledOpen && this._checkOpen(this)) {
             console.log(this.currentOpenPrice, 'open')
             this._openOrder = this._getOpenOrder(this)
-            this.open()
+            await this.open()
             this._currentSize = this._openOrder.size
             this._initialSize = this._openOrder.size
             this._openPrice = this._openOrder.price
@@ -238,13 +238,13 @@ export abstract class BasePositionClass extends BaseObjectClass {
         } else if (this.state.enabledClose && this._checkClose(this)) {
             console.log(this.currentOpenPrice, 'close')
             this._closeOrder = this._getCloseOrder(this)
-            this.close()
+            await this.close()
             this._closePrice = this._closeOrder.price
             this.setClose()
         } else if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
             console.log(this.currentOpenPrice, 'losscut')
             this._losscutOrder = this._getLosscutOrder(this)
-            this.losscut()
+            await this.losscut()
             if (this._closeOrder)
                 this._closePrice = this._closeOrder.price
             this.setClose()
