@@ -223,18 +223,31 @@ export abstract class BasePositionClass extends BaseObjectClass {
         ){
             console.log(this.currentOpenPrice, this.state.positionState, 'cancel')
             this.cancel()
+            this.state.setOrderCanceled()
         } else if (this.state.enabledOpen && this._checkOpen(this)) {
             console.log(this.currentOpenPrice, 'open')
             this._openOrder = this._getOpenOrder(this)
             this.open()
+            this._currentSize = this._openOrder.size
+            this._initialSize = this._openOrder.size
+            this._openPrice = this._openOrder.price
+            this.state.setOrderClosed()
+            if (this.onOpened){
+                this.onOpened(this)
+            }
         } else if (this.state.enabledClose && this._checkClose(this)) {
             console.log(this.currentOpenPrice, 'close')
             this._closeOrder = this._getCloseOrder(this)
             this.close()
+            this._closePrice = this._closeOrder.price
+            this.setClose()
         } else if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
             console.log(this.currentOpenPrice, 'losscut')
             this._losscutOrder = this._getLosscutOrder(this)
             this.losscut()
+            if (this._closeOrder)
+                this._closePrice = this._closeOrder.price
+            this.setClose()
         } else if (this.state.enabledCloseOrderCancel && this._closeOrder &&
             ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
             (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))
