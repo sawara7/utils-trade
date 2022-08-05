@@ -174,8 +174,8 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
                 this._closeOrder = this._getCloseOrder(this);
                 yield this.close();
                 if (this.state.orderState === "close") {
-                    this.setClose();
                     this._closePrice = this._closeOrder.price;
+                    this.setClose();
                 }
             }
             else if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {

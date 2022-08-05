@@ -242,8 +242,8 @@ export abstract class BasePositionClass extends BaseObjectClass {
             this._closeOrder = this._getCloseOrder(this)
             await this.close()
             if (this.state.orderState === "close") {
-                this.setClose()
                 this._closePrice = this._closeOrder.price
+                this.setClose()
             }
         } else if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
             console.log(this.currentOpenPrice, 'losscut')
