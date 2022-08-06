@@ -225,21 +225,22 @@ export abstract class BasePositionClass extends BaseObjectClass {
         this.bestAsk = ticker.ask
         this.bestBid = ticker.bid
         
-        if (this.state.enabledCloseOrderCancel && this._closeOrder &&
-            ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
-            (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))
-        ) {
-            console.log("set close")
-            this.setClose()
-            return
-        }
-        
         if (this.state.enabledOpenOrderCancel && this._openOrder &&
             ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
             (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))
         ) {
             console.log("set open")
             this.setOpen(this._openOrder.size, this._openOrder.price)
+            return
+        }
+        
+        if (this.state.enabledCloseOrderCancel && this._closeOrder &&
+            ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
+            (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))
+        ) {
+            console.log("set close")
+            this._closePrice = this._closeOrder.price
+            this.setClose()
             return
         }
         
