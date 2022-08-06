@@ -3,6 +3,7 @@ import { BaseOrderClass, BaseOrderVariables, Order, Ticker } from "..";
 import { PositionStateClass, PositionStateVariables } from "./positionState";
 export interface BasePositionParameters {
     backtestMode?: boolean;
+    enabledOrderUpdate: boolean;
     getOpenOrder: (pos: BasePositionClass) => BaseOrderClass;
     getCloseOrder: (pos: BasePositionClass) => BaseOrderClass;
     getLossCutOrder?: (pos: BasePositionClass) => BaseOrderClass;
@@ -49,6 +50,7 @@ export declare abstract class BasePositionClass extends BaseObjectClass {
     private _openOrder?;
     private _closeOrder?;
     private _losscutOrder?;
+    protected _enabledOrderUpdate: boolean;
     protected _positionState: PositionStateClass;
     private _bestBid;
     private _bestAsk;
@@ -81,6 +83,7 @@ export declare abstract class BasePositionClass extends BaseObjectClass {
     private updateOpenOrder;
     private updateCloseOrder;
     private updateLosscutOrder;
+    private setOpen;
     private setClose;
     updateOrder(order: Order): void;
     get profit(): number;

@@ -74,6 +74,7 @@ const checkLosscutCancel = (pos: BasePositionClass): boolean => {
 
 test('Create PositionClass', () => {
     const pos = new TestPositionClass({
+        enabledOrderUpdate: true,
         getOpenOrder: (pos: BasePositionClass)=>{
             return openOrder
         },
@@ -102,6 +103,7 @@ test('Open PositionClass', async () => {
         return false
     }    
     const pos = new TestPositionClass({
+        enabledOrderUpdate: true,
         getOpenOrder: (pos: BasePositionClass)=>{
             return openOrder
         },
@@ -151,6 +153,7 @@ test('Close PositionClass', async () => {
         return true
     }    
     const pos = new TestPositionClass({
+        enabledOrderUpdate: true,
         getOpenOrder: (pos: BasePositionClass)=>{
             return openOrder
         },
@@ -207,6 +210,7 @@ test('Cancel PositionClass', async () => {
         return true
     }    
     const pos = new TestPositionClass({
+        enabledOrderUpdate: true,
         getOpenOrder: (pos: BasePositionClass)=>{
             return openOrder
         },
@@ -318,6 +322,7 @@ test('Losscut PositionClass', async () => {
         return pos.bestBid < 99
     }    
     const pos = new TestPositionClass({
+        enabledOrderUpdate: true,
         getOpenOrder: (pos: BasePositionClass)=>{
             return openOrder
         },

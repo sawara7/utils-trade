@@ -27,10 +27,12 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
         this._currentSize = 0;
         this._openPrice = 0;
         this._closePrice = 0;
+        this._enabledOrderUpdate = true;
         this._bestBid = 0;
         this._bestAsk = 0;
         this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
+        this._enabledOrderUpdate = params.enabledOrderUpdate;
         this._getOpenOrder = params.getOpenOrder;
         this._getCloseOrder = params.getCloseOrder;
         this._getLosscutOrder = params.getLossCutOrder;
@@ -102,6 +104,12 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
                 this.state.setBeforePlaceOrder("open");
                 const id = yield this.doOpen();
                 this.state.setAfterPlaceOrder(id);
+                if (!this._enabledOrderUpdate) {
+                    if (this.state.orderState === "open" && this._openOrder) {
+                        const p = this._openOrder.roundPrice(this._openOrder.price);
+                        this.setOpen(this._openOrder.size, p);
+                    }
+                }
             }));
             if (!res.success) {
                 console.log("[open error]" + res.message);
@@ -115,6 +123,13 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
                 this.state.setBeforePlaceOrder(this.state.isLosscut ? "losscut" : "close");
                 const id = yield this.doClose();
                 this.state.setAfterPlaceOrder(id);
+                if (!this._enabledOrderUpdate) {
+                    if (this.state.orderState === "close" && this._closeOrder) {
+                        this._currentSize = 0;
+                        this._closePrice = this._closeOrder.price;
+                        this.setClose();
+                    }
+                }
             }));
             if (!res.success) {
                 console.log("[closer error]" + res.message);
@@ -127,6 +142,9 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
             const res = yield this.lock(() => __awaiter(this, void 0, void 0, function* () {
                 this._positionState.setCancelOrder();
                 yield this.doCancel();
+                if (!this._enabledOrderUpdate) {
+                    this.state.setOrderCanceled();
+                }
             }));
             if (!res.success) {
                 console.log("[cancel error]" + res.message);
@@ -148,59 +166,52 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
         return __awaiter(this, void 0, void 0, function* () {
             this.bestAsk = ticker.ask;
             this.bestBid = ticker.bid;
-            if ((this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) ||
-                (this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this) ||
-                    (this.state.enabledCloseOrderCancel && this._checkLosscutCancel && this._checkLosscutCancel(this)))) {
-                console.log(this.currentOpenPrice, this.state.positionState, 'cancel');
+            if (this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) {
+                console.log(this.currentOpenPrice, this.state.positionState, 'Open Order Cancel');
                 yield this.cancel();
-                this.state.setOrderCanceled();
+                return;
             }
-            else if (this.state.enabledOpen && this._checkOpen(this)) {
+            if ((this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this))) {
+                console.log(this.currentOpenPrice, this.state.positionState, 'Close Order Cancel');
+                yield this.cancel();
+                return;
+            }
+            if ((this.state.enabledCloseOrderCancel && this._checkLosscutCancel && this._checkLosscutCancel(this))) {
+                console.log(this.currentOpenPrice, this.state.positionState, 'Losscut Order Cancel');
+                yield this.cancel();
+                return;
+            }
+            if (this.state.enabledOpen && this._checkOpen(this)) {
                 console.log(this.currentOpenPrice, 'open');
                 this._openOrder = this._getOpenOrder(this);
                 yield this.open();
-                if (this.state.orderState === "open") {
-                    this._currentSize = this._openOrder.size;
-                    this._initialSize = this._openOrder.size;
-                    this._openPrice = this._openOrder.price;
-                    this.state.setOrderClosed();
-                    if (this.onOpened) {
-                        this.onOpened(this);
-                    }
-                }
+                return;
             }
-            else if (this.state.enabledClose && this._checkClose(this)) {
+            if (this.state.enabledClose && this._checkClose(this)) {
                 console.log(this.currentOpenPrice, 'close');
                 this._closeOrder = this._getCloseOrder(this);
                 yield this.close();
-                if (this.state.orderState === "close") {
-                    this.setClose();
-                    this._closePrice = this._closeOrder.price;
-                }
+                return;
             }
-            else if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
+            if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
                 console.log(this.currentOpenPrice, 'losscut');
                 this._losscutOrder = this._getLosscutOrder(this);
                 yield this.losscut();
-                if (this._closeOrder)
-                    this._closePrice = this._closeOrder.price;
-                this.setClose();
+                return;
             }
-            else if (this.state.enabledCloseOrderCancel && this._closeOrder &&
-                ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
-                    (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))) {
-                this._closePrice = this._closeOrder.price;
-                this.setClose();
-            }
-            else if (this.state.enabledOpenOrderCancel && this._openOrder &&
-                ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
-                    (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))) {
-                this._currentSize = this._openOrder.size;
-                this._initialSize = this._openOrder.size;
-                this._openPrice = this._openOrder.roundPrice(this._openOrder.price);
-                this.state.setOrderClosed();
-                if (this.onOpened) {
-                    this.onOpened(this);
+            if (this._enabledOrderUpdate) {
+                if (this.state.enabledCloseOrderCancel && this._closeOrder &&
+                    ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
+                        (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))) {
+                    this.setClose();
+                    return;
+                }
+                if (this.state.enabledOpenOrderCancel && this._openOrder &&
+                    ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
+                        (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))) {
+                    const p = this._openOrder.roundPrice(this._openOrder.price);
+                    this.setOpen(this._openOrder.size, p);
+                    return;
                 }
             }
         });
@@ -211,11 +222,7 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
         }
         const size = this._openOrder.roundSize(order.size);
         const filled = this._openOrder.roundSize(order.filledSize);
-        if (filled > 0) {
-            this._currentSize = filled;
-            this._initialSize = filled;
-            this._openPrice = this._openOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
-        }
+        const price = this._openOrder.roundPrice(order.avgFillPrice ? order.avgFillPrice : order.price);
         if (filled !== size) {
             this.state.setOrderCanceled();
             if (this.onOpenOrderCanceled) {
@@ -224,10 +231,7 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
             return;
         }
         if (filled === size) {
-            this.state.setOrderClosed();
-            if (this.onOpened) {
-                this.onOpened(this);
-            }
+            this.setOpen(filled, price);
             return;
         }
     }
@@ -281,12 +285,24 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
             this.setClose();
         }
     }
-    setClose() {
+    setOpen(size, price) {
         if (!this._openOrder) {
             return;
         }
-        this._cumulativeProfit += this._initialSize *
-            (this._openOrder.side === 'buy' ? (this._closePrice - this._openPrice) : (this._openPrice - this._closePrice));
+        this._openPrice = price;
+        this._currentSize = size;
+        this._initialSize = size;
+        this.state.setOrderClosed();
+        if (this.onOpened) {
+            this.onOpened(this);
+        }
+    }
+    setClose() {
+        if (!this._openOrder || !this._closeOrder) {
+            return;
+        }
+        const priceDiff = this._openOrder.side === 'buy' ? (this._closePrice - this._openPrice) : (this._openPrice - this._closePrice);
+        this._cumulativeProfit += this._initialSize * priceDiff;
         this._initialSize = 0;
         this._currentSize = 0;
         this._closeCount++;
