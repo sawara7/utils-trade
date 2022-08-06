@@ -172,12 +172,6 @@ export abstract class BasePositionClass extends BaseObjectClass {
             this.state.setBeforePlaceOrder("open")
             const id = await this.doOpen()
             this.state.setAfterPlaceOrder(id)
-            if (!this._enabledOrderUpdate) {
-                if (this.state.orderState === "open" && this._openOrder) {
-                    const p = this._openOrder.roundPrice(this._openOrder.price)
-                    this.setOpen(this._openOrder.size, p)
-                }
-            }
         })
         if (!res.success) {
             console.log("[open error]" + res.message, this.openOrder)
@@ -192,13 +186,6 @@ export abstract class BasePositionClass extends BaseObjectClass {
             this.state.setBeforePlaceOrder(this.state.isLosscut? "losscut": "close")
             const id = await this.doClose()
             this.state.setAfterPlaceOrder(id)
-            if (!this._enabledOrderUpdate) {
-                if (this.state.orderState === "close" && this._closeOrder) {
-                    this._currentSize = 0
-                    this._closePrice = this._closeOrder.price
-                    this.setClose()
-                }
-            }
         })
         if (!res.success) {
             console.log("[close error]" + res.message, this.closeOrder)
@@ -270,7 +257,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
             return
         }
         
-        if (this._enabledOrderUpdate) {
+        if (!this._enabledOrderUpdate) {
             if (this.state.enabledCloseOrderCancel && this._closeOrder &&
                 ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
                 (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))
