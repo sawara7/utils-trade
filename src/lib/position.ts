@@ -206,6 +206,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
         if (!res.success) {
             console.log("[cancel error]" + res.message)
             this.state.setOrderCancelFailed()
+            this.state.setOrderFailed()
         }
     }
 

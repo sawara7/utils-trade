@@ -136,6 +136,7 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
             if (!res.success) {
                 console.log("[cancel error]" + res.message);
                 this.state.setOrderCancelFailed();
+                this.state.setOrderFailed();
             }
         });
     }
