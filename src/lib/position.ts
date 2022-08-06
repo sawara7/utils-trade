@@ -180,7 +180,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
             }
         })
         if (!res.success) {
-            console.log("[open error]" + res.message)
+            console.log("[open error]" + res.message, this.openOrder)
             this.state.setOrderFailed()
         }
     }
@@ -201,7 +201,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
             }
         })
         if (!res.success) {
-            console.log("[closer error]" + res.message)
+            console.log("[close error]" + res.message, this.closeOrder)
             this.state.setOrderFailed()
         }
     }
@@ -238,39 +238,33 @@ export abstract class BasePositionClass extends BaseObjectClass {
         this.bestBid = ticker.bid
         
         if (this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) {
-            console.log(this.currentOpenPrice, this.state.positionState, 'Open Order Cancel')
             await this.cancel()
             return
         }
         
         if ((this.state.enabledCloseOrderCancel && this._checkCloseCancel && this._checkCloseCancel(this))) {
-            console.log(this.currentOpenPrice, this.state.positionState, 'Close Order Cancel')
             await this.cancel()
             return
         }
         
         if ((this.state.enabledCloseOrderCancel && this._checkLosscutCancel && this._checkLosscutCancel(this))){
-            console.log(this.currentOpenPrice, this.state.positionState, 'Losscut Order Cancel')
             await this.cancel()
             return
         }
         
         if (this.state.enabledOpen && this._checkOpen(this)) {
-            console.log(this.currentOpenPrice, 'open')
             this._openOrder = this._getOpenOrder(this)
             await this.open()
             return
         }
         
         if (this.state.enabledClose && this._checkClose(this)) {
-            console.log(this.currentOpenPrice, 'close')
             this._closeOrder = this._getCloseOrder(this)
             await this.close()
             return
         }
         
         if (this.state.enabledLosscut && this._checkLosscut && this._getLosscutOrder && this._checkLosscut(this)) {
-            console.log(this.currentOpenPrice, 'losscut')
             this._losscutOrder = this._getLosscutOrder(this)
             await this.losscut()
             return
