@@ -62,7 +62,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
     private _closeOrder?: BaseOrderClass
     private _losscutOrder?: BaseOrderClass
 
-    protected _enabledOrderUpdate: boolean = true
+    protected _enabledOrderUpdate: boolean = false
     protected _positionState: PositionStateClass
 
     private _bestBid: number = 0
@@ -263,6 +263,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
                 ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
                 (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))
             ) {
+                console.log("set close")
                 this.setClose()
                 return
             }
@@ -271,6 +272,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
                 ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
                 (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))
             ) {
+                console.log("set open")
                 this.setOpen(this._openOrder.size, this._openOrder.price)
                 return
             }

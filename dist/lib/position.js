@@ -27,7 +27,7 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
         this._currentSize = 0;
         this._openPrice = 0;
         this._closePrice = 0;
-        this._enabledOrderUpdate = true;
+        this._enabledOrderUpdate = false;
         this._bestBid = 0;
         this._bestAsk = 0;
         this._positionState = new positionState_1.PositionStateClass();
@@ -185,12 +185,14 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
                 if (this.state.enabledCloseOrderCancel && this._closeOrder &&
                     ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
                         (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))) {
+                    console.log("set close");
                     this.setClose();
                     return;
                 }
                 if (this.state.enabledOpenOrderCancel && this._openOrder &&
                     ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
                         (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))) {
+                    console.log("set open");
                     this.setOpen(this._openOrder.size, this._openOrder.price);
                     return;
                 }
