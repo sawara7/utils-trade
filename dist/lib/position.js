@@ -191,8 +191,7 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
                 if (this.state.enabledOpenOrderCancel && this._openOrder &&
                     ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
                         (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))) {
-                    const p = this._openOrder.roundPrice(this._openOrder.price);
-                    this.setOpen(this._openOrder.size, p);
+                    this.setOpen(this._openOrder.size, this._openOrder.price);
                     return;
                 }
             }
