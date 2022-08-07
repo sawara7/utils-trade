@@ -397,6 +397,10 @@ export abstract class BasePositionClass extends BaseObjectClass {
     get losscutCount(): number {
         return this._losscutCount
     }
+
+    get ticker(): Ticker {
+        return this._ticker
+    }
     
     get bestBid(): number {
         return this._ticker.bid

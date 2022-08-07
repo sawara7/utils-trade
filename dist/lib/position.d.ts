@@ -88,6 +88,7 @@ export declare abstract class BasePositionClass extends BaseObjectClass {
     get unrealizedProfit(): number;
     get closeCount(): number;
     get losscutCount(): number;
+    get ticker(): Ticker;
     get bestBid(): number;
     get bestAsk(): number;
     get state(): PositionStateClass;

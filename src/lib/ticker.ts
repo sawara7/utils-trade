@@ -39,7 +39,7 @@ export function hasExecutedLimitOrder(orderSide: OrderSide, orderPrice: number, 
 
 // その値段は指値範囲内か
 export function withinLimitOrderRange(orderSide: OrderSide, orderPrice: number, ticker: Ticker, rangeRate: number): boolean {
-    if ( 0 > rangeRate || rangeRate > 1) {
+    if ( rangeRate < 0 || rangeRate > 1) {
         return false
     }
     if (!enabledExecuteLimitOrder(orderSide, orderPrice, ticker)) {

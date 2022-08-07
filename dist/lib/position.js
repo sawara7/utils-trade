@@ -328,6 +328,9 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
     get losscutCount() {
         return this._losscutCount;
     }
+    get ticker() {
+        return this._ticker;
+    }
     get bestBid() {
         return this._ticker.bid;
     }

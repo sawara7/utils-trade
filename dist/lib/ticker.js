@@ -35,7 +35,7 @@ function hasExecutedLimitOrder(orderSide, orderPrice, ticker) {
 exports.hasExecutedLimitOrder = hasExecutedLimitOrder;
 // その値段は指値範囲内か
 function withinLimitOrderRange(orderSide, orderPrice, ticker, rangeRate) {
-    if (0 > rangeRate || rangeRate > 1) {
+    if (rangeRate < 0 || rangeRate > 1) {
         return false;
     }
     if (!enabledExecuteLimitOrder(orderSide, orderPrice, ticker)) {
