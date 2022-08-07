@@ -10,8 +10,8 @@
   "scripts": {
     "install-rimraf": "npm install --save-dev rimraf",
     "cleanup": "rimraf package-lock.json && rimraf dist && rimraf node_modules",
-    "build": "npm run install-rimraf && npm run cleanup && npm install && tsc",
-    "test": "jest"
+    "test": "jest",
+    "build": "npm run install-rimraf && npm run cleanup && npm install && tsc && npm run test"
   },
   "jest": {
     "globals": {

@@ -28,8 +28,11 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
         this._openPrice = 0;
         this._closePrice = 0;
         this._enabledOrderUpdate = false;
-        this._bestBid = 0;
-        this._bestAsk = 0;
+        this._ticker = {
+            bid: 0,
+            ask: 0,
+            time: '0'
+        };
         this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
         this._enabledOrderUpdate = params.enabledOrderUpdate;
@@ -69,8 +72,7 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
             this._losscutOrder.import(v._losscutOrder);
         }
         this._positionState.import(v._positionState);
-        this._bestBid = v._bestBid;
-        this._bestAsk = v._bestAsk;
+        this._ticker = v._ticker;
     }
     export() {
         const v = super.export();
@@ -94,8 +96,7 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
             v._losscutOrder = this._losscutOrder.export();
         }
         v._positionState = this._positionState.export();
-        v._bestBid = this._bestBid;
-        v._bestAsk = this._bestAsk;
+        v._ticker = this._ticker;
         return v;
     }
     open() {
@@ -152,18 +153,15 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
     }
     updateTicker(ticker) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.bestAsk = ticker.ask;
-            this.bestBid = ticker.bid;
-            if (this.state.enabledCloseOrderCancel && this._closeOrder &&
-                ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
-                    (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))) {
+            this._ticker = ticker;
+            if (this.state.enabledCloseOrderCancel && this._closeOrder
+                && (0, __1.hasExecutedLimitOrder)(this._closeOrder.side, this._closeOrder.price, this._ticker)) {
                 console.log("set close");
                 this.setClose();
                 return;
             }
-            if (this.state.enabledOpenOrderCancel && this._openOrder &&
-                ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
-                    (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))) {
+            if (this.state.enabledOpenOrderCancel && this._openOrder
+                && (0, __1.hasExecutedLimitOrder)(this._openOrder.side, this._openOrder.price, this._ticker)) {
                 console.log("set open");
                 this.setOpen(this._openOrder.size, this._openOrder.price);
                 return;
@@ -331,16 +329,10 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
         return this._losscutCount;
     }
     get bestBid() {
-        return this._bestBid;
-    }
-    set bestBid(value) {
-        this._bestBid = value;
+        return this._ticker.bid;
     }
     get bestAsk() {
-        return this._bestAsk;
-    }
-    set bestAsk(value) {
-        this._bestAsk = value;
+        return this._ticker.ask;
     }
     get state() {
         return this._positionState;

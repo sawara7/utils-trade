@@ -29,8 +29,7 @@ export interface BasePositionVariables {
     _closeOrder?: BaseOrderVariables;
     _losscutOrder?: BaseOrderVariables;
     _positionState: PositionStateVariables;
-    _bestBid: number;
-    _bestAsk: number;
+    _ticker: Ticker;
 }
 export interface BasePositionResponse {
     success: boolean;
@@ -52,8 +51,7 @@ export declare abstract class BasePositionClass extends BaseObjectClass {
     private _losscutOrder?;
     protected _enabledOrderUpdate: boolean;
     protected _positionState: PositionStateClass;
-    private _bestBid;
-    private _bestAsk;
+    private _ticker;
     onOpened?: (pos: BasePositionClass) => void;
     onClosed?: (pos: BasePositionClass) => void;
     onDoneLosscut?: (pos: BasePositionClass) => void;
@@ -91,9 +89,7 @@ export declare abstract class BasePositionClass extends BaseObjectClass {
     get closeCount(): number;
     get losscutCount(): number;
     get bestBid(): number;
-    set bestBid(value: number);
     get bestAsk(): number;
-    set bestAsk(value: number);
     get state(): PositionStateClass;
     get currentOpenPrice(): number;
     get currentClosePrice(): number;

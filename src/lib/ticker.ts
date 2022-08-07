@@ -1,5 +1,5 @@
 import { SequenceList, SequenceListType, BaseObjectClass } from "my-utils"
-import { Ticker } from "./types"
+import { OrderSide, Ticker } from "./types"
 
 export class TickerClass extends BaseObjectClass {
     private _sequenceList: SequenceList
@@ -25,4 +25,14 @@ export class TickerClass extends BaseObjectClass {
     get bestAsk(): number | null {
         return this._sequenceList.lastValue("ask")
     }
+}
+
+// その値段で指値注文可能か
+export function enabledExecuteLimitOrder(orderSide: OrderSide, orderPrice: number, ticker: Ticker): boolean {
+    return ((orderSide === "buy" && orderPrice <= ticker.bid) || (orderSide === "sell" && orderPrice >= ticker.ask))
+}
+
+// その値段の指値は約定済みか
+export function hasExecutedLimitOrder(orderSide: OrderSide, orderPrice: number, ticker: Ticker): boolean {
+    return ((orderSide === "buy" && orderPrice > ticker.bid) || (orderSide === "sell" && orderPrice < ticker.ask))
 }

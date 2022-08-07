@@ -1,5 +1,5 @@
 import { BaseObjectClass } from "my-utils";
-import { Ticker } from "./types";
+import { OrderSide, Ticker } from "./types";
 export declare class TickerClass extends BaseObjectClass {
     private _sequenceList;
     constructor(intervalSec: number, sequenceNum: number);
@@ -7,3 +7,5 @@ export declare class TickerClass extends BaseObjectClass {
     get bestBid(): number | null;
     get bestAsk(): number | null;
 }
+export declare function enabledExecuteLimitOrder(orderSide: OrderSide, orderPrice: number, ticker: Ticker): boolean;
+export declare function hasExecutedLimitOrder(orderSide: OrderSide, orderPrice: number, ticker: Ticker): boolean;

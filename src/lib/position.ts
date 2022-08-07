@@ -1,5 +1,5 @@
 import { BaseObjectClass } from "my-utils"
-import { BaseOrderClass, BaseOrderVariables, Order, Ticker } from ".."
+import { BaseOrderClass, BaseOrderVariables, hasExecutedLimitOrder, Order, Ticker } from ".."
 import { PositionStateClass, PositionStateVariables } from "./positionState"
 
 export interface BasePositionParameters {
@@ -31,8 +31,7 @@ export interface BasePositionVariables {
     _closeOrder?: BaseOrderVariables
     _losscutOrder?: BaseOrderVariables
     _positionState: PositionStateVariables
-    _bestBid: number
-    _bestAsk: number
+    _ticker: Ticker
 }
 
 export interface BasePositionResponse {
@@ -65,8 +64,11 @@ export abstract class BasePositionClass extends BaseObjectClass {
     protected _enabledOrderUpdate: boolean = false
     protected _positionState: PositionStateClass
 
-    private _bestBid: number = 0
-    private _bestAsk: number = 0
+    private _ticker: Ticker = {
+        bid: 0,
+        ask: 0,
+        time: '0'
+    }
 
     // Events
     public onOpened?: (pos: BasePositionClass) => void
@@ -136,8 +138,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
             this._losscutOrder.import(v._losscutOrder)
         }
         this._positionState.import(v._positionState)
-        this._bestBid = v._bestBid
-        this._bestAsk = v._bestAsk
+        this._ticker = v._ticker
     }
 
     public export(): any {
@@ -162,8 +163,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
             v._losscutOrder = this._losscutOrder.export()
         }
         v._positionState = this._positionState.export() 
-        v._bestBid = this._bestBid
-        v._bestAsk = this._bestAsk
+        v._ticker = this._ticker
         return v
     }
 
@@ -222,27 +222,24 @@ export abstract class BasePositionClass extends BaseObjectClass {
     }
 
     public async updateTicker(ticker: Ticker) {
-        this.bestAsk = ticker.ask
-        this.bestBid = ticker.bid
+        this._ticker = ticker
         
-        if (this.state.enabledCloseOrderCancel && this._closeOrder &&
-            ((this._closeOrder.side === "buy" && this._closeOrder.price > this.bestBid) ||
-            (this._closeOrder.side === "sell" && this._closeOrder.price < this.bestAsk))
+        if (this.state.enabledCloseOrderCancel && this._closeOrder
+            && hasExecutedLimitOrder(this._closeOrder.side, this._closeOrder.price, this._ticker)
         ) {
             console.log("set close")
             this.setClose()
             return
         }
         
-        if (this.state.enabledOpenOrderCancel && this._openOrder &&
-            ((this._openOrder.side === "buy" && this._openOrder.price > this.bestBid) ||
-            (this._openOrder.side === "sell" && this._openOrder.price < this.bestAsk))
+        if (this.state.enabledOpenOrderCancel && this._openOrder
+            && hasExecutedLimitOrder(this._openOrder.side, this._openOrder.price, this._ticker)
         ) {
             console.log("set open")
             this.setOpen(this._openOrder.size, this._openOrder.price)
             return
         }
-        
+
         if (this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) {
             await this.cancel()
             return
@@ -403,19 +400,11 @@ export abstract class BasePositionClass extends BaseObjectClass {
     }
     
     get bestBid(): number {
-        return this._bestBid
-    }
-
-    set bestBid(value: number) {
-        this._bestBid = value
+        return this._ticker.bid
     }
 
     get bestAsk(): number {
-        return this._bestAsk
-    }
-
-    set bestAsk(value: number) {
-        this._bestAsk = value
+        return this._ticker.ask
     }
 
     get state(): PositionStateClass {
