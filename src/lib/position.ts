@@ -239,7 +239,6 @@ export abstract class BasePositionClass extends BaseObjectClass {
             this.setOpen(this._openOrder.size, this._openOrder.price)
             return
         }
-
         if (this.state.enabledOpenOrderCancel && this._checkOpenCancel && this._checkOpenCancel(this)) {
             await this.cancel()
             return
