@@ -9,3 +9,4 @@ export declare class TickerClass extends BaseObjectClass {
 }
 export declare function enabledExecuteLimitOrder(orderSide: OrderSide, orderPrice: number, ticker: Ticker): boolean;
 export declare function hasExecutedLimitOrder(orderSide: OrderSide, orderPrice: number, ticker: Ticker): boolean;
+export declare function withinLimitOrderRange(orderSide: OrderSide, orderPrice: number, ticker: Ticker, rangeRate: number): boolean;

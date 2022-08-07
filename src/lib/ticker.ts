@@ -36,3 +36,19 @@ export function enabledExecuteLimitOrder(orderSide: OrderSide, orderPrice: numbe
 export function hasExecutedLimitOrder(orderSide: OrderSide, orderPrice: number, ticker: Ticker): boolean {
     return ((orderSide === "buy" && orderPrice > ticker.bid) || (orderSide === "sell" && orderPrice < ticker.ask))
 }
+
+// その値段は指値範囲内か
+export function withinLimitOrderRange(orderSide: OrderSide, orderPrice: number, ticker: Ticker, rangeRate: number): boolean {
+    if ( 0 > rangeRate || rangeRate > 1) {
+        return false
+    }
+    if (!enabledExecuteLimitOrder(orderSide, orderPrice, ticker)) {
+        return false
+    }
+    if (orderSide === "buy") {
+        return orderPrice >= ticker.bid * (1 - rangeRate)
+    }else if (orderSide === "sell") {
+        return orderPrice <= ticker.ask * (1 + rangeRate)
+    }
+    return false
+}

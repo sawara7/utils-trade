@@ -1,5 +1,5 @@
 import {PositionOrderList, PositionStateClass, PositionStateList} from './positionState'
-import { enabledExecuteLimitOrder, hasExecutedLimitOrder } from './ticker'
+import { enabledExecuteLimitOrder, hasExecutedLimitOrder, withinLimitOrderRange } from './ticker'
 import { OrderSide, Ticker } from './types'
 
 test('Enabled Execute Limit Order', () => {
@@ -42,4 +42,28 @@ test('does not have Executed Limit Order', () => {
     }
     expect(!hasExecutedLimitOrder("buy", 99.5, tk)).toBeTruthy()
     expect(!hasExecutedLimitOrder("sell", 100.1, tk)).toBeTruthy()
+})
+
+test('within Limit Order Range', () => {
+    const tk: Ticker = {
+        bid: 99.5,
+        ask: 100.1,
+        time: Date.now().toString()
+    }
+    expect(withinLimitOrderRange("buy", 99.5, tk, 0.02)).toBeTruthy()
+    expect(withinLimitOrderRange("sell", 100.1, tk, 0.02)).toBeTruthy()
+    expect(withinLimitOrderRange("buy", 99, tk, 0.02)).toBeTruthy()
+    expect(withinLimitOrderRange("sell", 101, tk, 0.02)).toBeTruthy()
+})
+
+test('not within Limit Order Range', () => {
+    const tk: Ticker = {
+        bid: 99.5,
+        ask: 100.1,
+        time: Date.now().toString()
+    }
+    expect(!withinLimitOrderRange("buy", 99.6, tk, 0.02)).toBeTruthy()
+    expect(!withinLimitOrderRange("sell", 100.0, tk, 0.02)).toBeTruthy()
+    expect(!withinLimitOrderRange("buy", 90, tk, 0.02)).toBeTruthy()
+    expect(!withinLimitOrderRange("sell", 110, tk, 0.02)).toBeTruthy()
 })
