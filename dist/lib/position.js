@@ -157,6 +157,8 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
             if (this.state.enabledCloseOrderCancel && this._closeOrder
                 && (0, __1.hasExecutedLimitOrder)(this._closeOrder.side, this._closeOrder.price, this._ticker)) {
                 console.log("set close");
+                this._currentSize = 0;
+                this._closePrice = this._closeOrder.price;
                 this.setClose();
                 return;
             }
