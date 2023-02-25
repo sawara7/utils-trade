@@ -18,3 +18,4 @@ __exportStar(require("./lib/order"), exports);
 __exportStar(require("./lib/position"), exports);
 __exportStar(require("./lib/types"), exports);
 __exportStar(require("./lib/ticker"), exports);
+__exportStar(require("./lib/tse_calendar"), exports);

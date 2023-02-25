@@ -1,7 +1,7 @@
 export declare const PositionStateList: readonly ["neutral", "opened", "closed"];
-export declare type PositionState = typeof PositionStateList[number];
+export type PositionState = typeof PositionStateList[number];
 export declare const PositionOrderList: readonly ["none", "open", "close", "losscut"];
-export declare type PositionOrder = typeof PositionOrderList[number];
+export type PositionOrder = typeof PositionOrderList[number];
 export interface PositionStateVariables {
     isLosscut: boolean;
     positionState: PositionState;
