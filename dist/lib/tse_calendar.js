@@ -30,8 +30,8 @@ exports.TokyoStockMarketClosedDays = [
 function IsTokyoStockMarketClosed(date) {
     const d = date ? date : new Date();
     const dd = moment_timezone_1.default.tz(d.getTime(), 'Asia/Tokyo');
-    console.log(dd.year(), dd.month(), dd.date(), dd.hours(), dd.minutes());
-    if (dd.day() in [0, 6])
+    console.log(dd.year(), dd.month(), dd.date(), dd.hours(), dd.minutes(), dd.day());
+    if ([0, 6].includes(dd.day()))
         return true;
     for (const holiday of exports.TokyoStockMarketClosedDays) {
         const h = moment_timezone_1.default.tz(holiday, 'Asia/Tokyo');
