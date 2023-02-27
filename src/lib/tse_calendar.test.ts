@@ -1,6 +1,7 @@
 import { IsTokyoStockMarketClosed } from "./tse_calendar"
 
 test('TSE Calendar', () => {
+    console.log(new Date())
     expect(IsTokyoStockMarketClosed(new Date())).toBeTruthy()
     let date = new Date("2023-01-01T00:00:00")
     expect(IsTokyoStockMarketClosed(date)).toBeTruthy()
