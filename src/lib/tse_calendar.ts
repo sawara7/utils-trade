@@ -28,6 +28,7 @@ export type TokyoStockMarketClosedDay = typeof TokyoStockMarketClosedDays[number
 export function IsTokyoStockMarketClosed(date?: Date): boolean {
     const d = date? date: new Date()
     const dd = moment.tz(d.getTime(), 'Asia/Tokyo')
+    console.log(dd.year(), dd.month(), dd.date(), dd.hours(), dd.minutes())
     if (dd.day() in [0, 6]) return true
     for (const holiday of TokyoStockMarketClosedDays) {
         const h = moment.tz(holiday, 'Asia/Tokyo')
@@ -38,7 +39,6 @@ export function IsTokyoStockMarketClosed(date?: Date): boolean {
                 return true
             }
     }
-    console.log(dd.year(), dd.month(), dd.date(), dd.hours(), dd.minutes())
     const t = dd.hours()*60*60 + dd.minutes()*60 + dd.seconds() 
     if (9*60*60 < t && t < 11*60*60+30*60) return false
     if (12*60*60+30*60 < t && t < 15*60*60) return false
