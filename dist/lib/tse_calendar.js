@@ -7,34 +7,33 @@ exports.IsTokyoStockMarketClosed = exports.TokyoStockMarketClosedDays = void 0;
 const moment_timezone_1 = __importDefault(require("moment-timezone"));
 require("moment/locale/ja");
 exports.TokyoStockMarketClosedDays = [
-    "2023/01/01",
-    "2023/01/02",
-    "2023/01/03",
-    "2023/01/09",
-    "2023/02/11",
-    "2023/02/23",
-    "2023/03/21",
-    "2023/04/29",
-    "2023/05/03",
-    "2023/05/04",
-    "2023/05/05",
-    "2023/07/17",
-    "2023/08/11",
-    "2023/09/18",
-    "2023/09/23",
-    "2023/10/09",
-    "2023/11/03",
-    "2023/11/23",
-    "2023/12/31" //（日）	休業日
+    "20230101",
+    "20230102",
+    "20230103",
+    "20230109",
+    "20230211",
+    "20230223",
+    "20230321",
+    "20230429",
+    "20230503",
+    "20230504",
+    "20230505",
+    "20230717",
+    "20230811",
+    "20230918",
+    "20230923",
+    "20231009",
+    "20231103",
+    "20231123",
+    "20231231" //（日）	休業日
 ];
 function IsTokyoStockMarketClosed(date) {
     const d = date ? date : new Date();
     const dd = moment_timezone_1.default.tz(d.getTime(), 'Asia/Tokyo');
-    console.log(dd.year(), dd.month(), dd.date(), dd.hours(), dd.minutes(), dd.day());
     if ([0, 6].includes(dd.day()))
         return true;
     for (const holiday of exports.TokyoStockMarketClosedDays) {
-        const h = moment_timezone_1.default.tz(holiday, 'Asia/Tokyo');
+        const h = moment_timezone_1.default.tz(holiday + 'T000000+0900', 'Asia/Tokyo');
         if (dd.year() === h.year() &&
             dd.month() === h.month() &&
             dd.date() === h.date()) {
