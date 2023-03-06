@@ -39,7 +39,7 @@ export function IsTokyoStockMarketClosed(date?: Date): boolean {
             }
     }
     const t = dd.hours()*60*60 + dd.minutes()*60 + dd.seconds() 
-    if (9*60*60 < t && t < 11*60*60+30*60) return false
-    if (12*60*60+30*60 < t && t < 15*60*60) return false
+    if (9*60*60 - 10*60< t && t < 11*60*60+30*60) return false
+    if (12*60*60+30*60 - 10*60 < t && t < 15*60*60) return false
     return true
 }
