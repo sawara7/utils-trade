@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.IsTokyoStockMarketClosed = exports.TokyoStockMarketClosedDays = void 0;
+exports.getExpireDate = exports.IsTokyoStockMarketClosed = exports.TokyoStockMarketClosedDays = void 0;
 const moment_timezone_1 = __importDefault(require("moment-timezone"));
 require("moment/locale/ja");
 exports.TokyoStockMarketClosedDays = [
@@ -27,7 +27,7 @@ exports.TokyoStockMarketClosedDays = [
     "20231123",
     "20231231" //（日）	休業日
 ];
-function IsTokyoStockMarketClosed(date) {
+function IsTokyoStockMarketClosed(date, onlyDate) {
     const d = date ? date : new Date();
     const dd = moment_timezone_1.default.tz(d.getTime(), 'Asia/Tokyo');
     if ([0, 6].includes(dd.day()))
@@ -45,6 +45,19 @@ function IsTokyoStockMarketClosed(date) {
         return false;
     if (12 * 60 * 60 + 30 * 60 - 10 * 60 < t && t < 15 * 60 * 60)
         return false;
-    return true;
+    return !onlyDate && true;
 }
 exports.IsTokyoStockMarketClosed = IsTokyoStockMarketClosed;
+function getExpireDate(op) {
+    const d = op && op.date ? op.date : new Date();
+    d.setDate(d.getDate() + (op && op.expire ? op.expire : 7));
+    while (IsTokyoStockMarketClosed(d, true)) {
+        d.setDate(d.getDate() - 1);
+    }
+    var yyyy = d.getFullYear();
+    var mm = ('00' + (d.getMonth() + 1)).slice(-2);
+    var dd = ('00' + (d.getDate())).slice(-2);
+    const ymd = String(yyyy) + String(mm) + String(dd);
+    return parseInt(ymd);
+}
+exports.getExpireDate = getExpireDate;

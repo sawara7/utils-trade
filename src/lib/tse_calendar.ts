@@ -25,7 +25,7 @@ export const TokyoStockMarketClosedDays = [
 
 export type TokyoStockMarketClosedDay = typeof TokyoStockMarketClosedDays[number]
 
-export function IsTokyoStockMarketClosed(date?: Date): boolean {
+export function IsTokyoStockMarketClosed(date?: Date, onlyDate?: boolean): boolean {
     const d = date? date: new Date()
     const dd = moment.tz(d.getTime(), 'Asia/Tokyo')
     if ([0, 6].includes(dd.day())) return true
@@ -41,5 +41,24 @@ export function IsTokyoStockMarketClosed(date?: Date): boolean {
     const t = dd.hours()*60*60 + dd.minutes()*60 + dd.seconds() 
     if (9*60*60 - 10*60< t && t < 11*60*60+30*60) return false
     if (12*60*60+30*60 - 10*60 < t && t < 15*60*60) return false
-    return true
+    return !onlyDate && true
 }
+
+// get expire date for kabuS API
+export interface getExpireDateOption {
+    date?: Date,
+    expire?: number
+}
+
+export function getExpireDate(op?: getExpireDateOption): number {
+    const d = op && op.date? op.date: new Date()
+    d.setDate(d.getDate() + (op && op.expire? op.expire: 7))
+    while(IsTokyoStockMarketClosed(d, true)) {
+        d.setDate(d.getDate() - 1)
+    }
+    var yyyy = d.getFullYear();
+    var mm = ('00' + (d.getMonth()+1)).slice(-2);
+    var dd = ('00' + (d.getDate())).slice(-2);
+    const ymd = String(yyyy) + String(mm) + String(dd);
+    return parseInt(ymd);
+  }
