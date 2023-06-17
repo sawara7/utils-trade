@@ -14,6 +14,16 @@ export function getCloseSide(openSide: OrderSide): OrderSide {
   return openSide === "buy"? "sell": "buy"
 }
 
+export type ListByOrderSide<T> = {[orderSide: string]: T}
+
+export function getListByOrderSide<T>(value: T): ListByOrderSide<T> {
+  const res: ListByOrderSide<T> = {}
+  for (const s of OrderSideList) {
+    res[s] = value
+  }
+  return res
+}
+
 export const OrderTypeList = [
     "limit",
     "market"

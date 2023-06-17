@@ -3,6 +3,10 @@ export type TickerType = typeof TickerTypeList[number];
 export declare const OrderSideList: readonly ["buy", "sell"];
 export type OrderSide = typeof OrderSideList[number];
 export declare function getCloseSide(openSide: OrderSide): OrderSide;
+export type ListByOrderSide<T> = {
+    [orderSide: string]: T;
+};
+export declare function getListByOrderSide<T>(value: T): ListByOrderSide<T>;
 export declare const OrderTypeList: readonly ["limit", "market"];
 export type OrderType = typeof OrderTypeList[number];
 export declare const MarketTypeList: readonly ["spot", "future"];
