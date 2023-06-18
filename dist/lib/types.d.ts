@@ -6,7 +6,7 @@ export declare function getCloseSide(openSide: OrderSide): OrderSide;
 export type ListByOrderSide<T> = {
     [orderSide: string]: T;
 };
-export declare function getListByOrderSide<T>(value: T): ListByOrderSide<T>;
+export declare function getListByOrderSide<T>(value: (s: OrderSide) => T): ListByOrderSide<T>;
 export declare const OrderTypeList: readonly ["limit", "market"];
 export type OrderType = typeof OrderTypeList[number];
 export declare const MarketTypeList: readonly ["spot", "future"];

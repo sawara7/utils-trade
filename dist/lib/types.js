@@ -16,7 +16,7 @@ exports.getCloseSide = getCloseSide;
 function getListByOrderSide(value) {
     const res = {};
     for (const s of exports.OrderSideList) {
-        res[s] = value;
+        res[s] = value(s);
     }
     return res;
 }
