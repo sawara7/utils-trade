@@ -1,4 +1,4 @@
-import { BaseObjectClass } from "my-utils";
+import { BaseObjectClass } from "utils-general";
 import { OrderSide, Ticker } from "./types";
 export declare class TickerClass extends BaseObjectClass {
     private _sequenceList;

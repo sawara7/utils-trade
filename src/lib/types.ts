@@ -46,9 +46,17 @@ export interface MarketInfo {
 }
 
 export interface Ticker {
-  time: string
+  timeStamp: number
   bid: number
   ask: number
+}
+
+export function getDefaultTicker(): Ticker {
+  return {
+      ask: 0,
+      bid: 0,
+      timeStamp: 0
+  }
 }
 
 export interface Order {

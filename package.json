@@ -1,17 +1,12 @@
 {
-  "name": "trade-utils",
+  "name": "utils-trade",
   "version": "0.0.1",
-  "description": "trade-utils",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/sawara7/trade-utils.git"
-  },
   "main": "dist/index.js",
   "scripts": {
     "install-rimraf": "npm install --save-dev rimraf",
     "cleanup": "rimraf package-lock.json && rimraf dist && rimraf node_modules",
     "test": "jest",
-    "build": "npm run install-rimraf && npm run cleanup && npm install && tsc && npm run test"
+    "build": "npm run install-rimraf && npm run cleanup && npm install && tsc"
   },
   "jest": {
     "globals": {
@@ -33,6 +28,6 @@
   },
   "dependencies": {
     "moment-timezone": "^0.5.41",
-    "my-utils": "github:sawara7/my-utils"
+    "utils-general": "github:sawara7/utils-general"
   }
 }

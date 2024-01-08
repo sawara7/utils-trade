@@ -1,7 +1,7 @@
 import { syncBuiltinESMExports } from "module";
 import { execPath } from "process";
 import { BaseOrderClass, BasePositionClass, MarketInfo } from "..";
-import { sleep } from "my-utils";
+import { sleep } from "utils-general";
 
 export class TestPositionClass extends BasePositionClass {
     async doOpen() {
@@ -114,7 +114,7 @@ test('Open PositionClass', async () => {
         checkClose: checkClose
     })
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100.0,
         ask: 101.0
     })
@@ -164,7 +164,7 @@ test('Close PositionClass', async () => {
         checkClose: checkClose
     })
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100.0,
         ask: 101.0
     })
@@ -181,7 +181,7 @@ test('Close PositionClass', async () => {
         avgFillPrice: 100
     })
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100.0,
         ask: 101.0
     })
@@ -221,7 +221,7 @@ test('Cancel PositionClass', async () => {
         checkClose: checkClose
     })
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100.0,
         ask: 101.0
     })
@@ -244,7 +244,7 @@ test('Cancel PositionClass', async () => {
     expect(pos.state.isNoOrder).toBe(true)
     expect(pos.state.positionState).toBe("neutral")
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100.0,
         ask: 101.0
     })
@@ -266,7 +266,7 @@ test('Cancel PositionClass', async () => {
     expect(pos.currentSize).toBe(1)
     expect(pos.currentOpenPrice).toBe(100)
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100.0,
         ask: 101.0
     })
@@ -287,7 +287,7 @@ test('Cancel PositionClass', async () => {
     })
     await sleep(10)
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100.0,
         ask: 101.0
     })
@@ -337,7 +337,7 @@ test('Losscut PositionClass', async () => {
         checkLosscut: checkLosscut
     })
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100.0,
         ask: 101.0
     })
@@ -356,13 +356,13 @@ test('Losscut PositionClass', async () => {
     })
     await sleep(10)
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100,
         ask: 101
     })
     await sleep(10)
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 98,
         ask: 99
     })
@@ -381,7 +381,7 @@ test('Losscut PositionClass', async () => {
     })
     await sleep(10)
     await pos.updateTicker({
-        time: Date.now().toString(),
+        timeStamp: Date.now(),
         bid: 100.0,
         ask: 101.0
     })

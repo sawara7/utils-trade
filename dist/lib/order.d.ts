@@ -1,4 +1,4 @@
-import { BaseObjectClass } from "my-utils";
+import { BaseObjectClass } from "utils-general";
 import { MarketInfo, OrderSide, OrderType } from "./types";
 export interface BaseOrderSettings {
     clientID?: string;

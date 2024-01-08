@@ -1,16 +1,16 @@
 export declare const TickerTypeList: readonly ["ask", "bid"];
-export type TickerType = typeof TickerTypeList[number];
+export declare type TickerType = typeof TickerTypeList[number];
 export declare const OrderSideList: readonly ["buy", "sell"];
-export type OrderSide = typeof OrderSideList[number];
+export declare type OrderSide = typeof OrderSideList[number];
 export declare function getCloseSide(openSide: OrderSide): OrderSide;
-export type ListByOrderSide<T> = {
+export declare type ListByOrderSide<T> = {
     [orderSide: string]: T;
 };
 export declare function getListByOrderSide<T>(value: (s: OrderSide) => T): ListByOrderSide<T>;
 export declare const OrderTypeList: readonly ["limit", "market"];
-export type OrderType = typeof OrderTypeList[number];
+export declare type OrderType = typeof OrderTypeList[number];
 export declare const MarketTypeList: readonly ["spot", "future"];
-export type MarketType = typeof MarketTypeList[number];
+export declare type MarketType = typeof MarketTypeList[number];
 export interface MarketInfo {
     name: string;
     type: MarketType;
@@ -20,10 +20,11 @@ export interface MarketInfo {
     minOrderSize: number;
 }
 export interface Ticker {
-    time: string;
+    timeStamp: number;
     bid: number;
     ask: number;
 }
+export declare function getDefaultTicker(): Ticker;
 export interface Order {
     orderID: string;
     clientId?: string;

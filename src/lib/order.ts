@@ -1,6 +1,6 @@
 import {
     BaseObjectClass
-} from "my-utils"
+} from "utils-general"
 
 import {
     MarketInfo,

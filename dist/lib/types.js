@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MarketTypeList = exports.OrderTypeList = exports.getListByOrderSide = exports.getCloseSide = exports.OrderSideList = exports.TickerTypeList = void 0;
+exports.getDefaultTicker = exports.MarketTypeList = exports.OrderTypeList = exports.getListByOrderSide = exports.getCloseSide = exports.OrderSideList = exports.TickerTypeList = void 0;
 exports.TickerTypeList = [
     "ask",
     "bid"
@@ -29,3 +29,11 @@ exports.MarketTypeList = [
     "spot",
     "future"
 ];
+function getDefaultTicker() {
+    return {
+        ask: 0,
+        bid: 0,
+        timeStamp: 0
+    };
+}
+exports.getDefaultTicker = getDefaultTicker;

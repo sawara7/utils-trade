@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.withinLimitOrderRange = exports.hasExecutedLimitOrder = exports.enabledExecuteLimitOrder = exports.TickerClass = void 0;
-const my_utils_1 = require("my-utils");
-class TickerClass extends my_utils_1.BaseObjectClass {
+const utils_general_1 = require("utils-general");
+class TickerClass extends utils_general_1.BaseObjectClass {
     constructor(intervalSec, sequenceNum) {
         super();
-        this._sequenceList = new my_utils_1.SequenceList(intervalSec, sequenceNum);
+        this._sequenceList = new utils_general_1.SequenceList(intervalSec, sequenceNum);
     }
     update(ticker) {
         const tk = {

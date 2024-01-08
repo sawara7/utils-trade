@@ -10,10 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasePositionClass = void 0;
-const my_utils_1 = require("my-utils");
+const utils_general_1 = require("utils-general");
 const __1 = require("..");
 const positionState_1 = require("./positionState");
-class BasePositionClass extends my_utils_1.BaseObjectClass {
+class BasePositionClass extends utils_general_1.BaseObjectClass {
     constructor(params) {
         super();
         this._orderLock = false;
@@ -31,7 +31,7 @@ class BasePositionClass extends my_utils_1.BaseObjectClass {
         this._ticker = {
             bid: 0,
             ask: 0,
-            time: '0'
+            timeStamp: 0
         };
         this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;

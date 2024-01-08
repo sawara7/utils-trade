@@ -1,6 +1,5 @@
-import { SequenceList, SequenceListType, BaseObjectClass } from "my-utils"
+import { SequenceList, SequenceListType, BaseObjectClass } from "utils-general"
 import { OrderSide, Ticker } from "./types"
-
 export class TickerClass extends BaseObjectClass {
     private _sequenceList: SequenceList
 

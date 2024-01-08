@@ -1,4 +1,4 @@
-import { BaseObjectClass } from "my-utils"
+import { BaseObjectClass } from "utils-general"
 import { BaseOrderClass, BaseOrderVariables, hasExecutedLimitOrder, Order, Ticker } from ".."
 import { PositionStateClass, PositionStateVariables } from "./positionState"
 
@@ -67,7 +67,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
     private _ticker: Ticker = {
         bid: 0,
         ask: 0,
-        time: '0'
+        timeStamp: 0
     }
 
     // Events

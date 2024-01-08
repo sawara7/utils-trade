@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseOrderClass = void 0;
-const my_utils_1 = require("my-utils");
-class BaseOrderClass extends my_utils_1.BaseObjectClass {
+const utils_general_1 = require("utils-general");
+class BaseOrderClass extends utils_general_1.BaseObjectClass {
     constructor(params) {
         super();
         this._clientID = params && params.clientID ? params.clientID : '';

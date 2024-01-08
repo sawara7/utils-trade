@@ -1,4 +1,4 @@
-import { BaseObjectClass } from "my-utils";
+import { BaseObjectClass } from "utils-general";
 import { BaseOrderClass, BaseOrderVariables, Order, Ticker } from "..";
 import { PositionStateClass, PositionStateVariables } from "./positionState";
 export interface BasePositionParameters {
