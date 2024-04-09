@@ -7,25 +7,35 @@ exports.getExpireDate = exports.IsTokyoStockMarketClosed = exports.TokyoStockMar
 const moment_timezone_1 = __importDefault(require("moment-timezone"));
 require("moment/locale/ja");
 exports.TokyoStockMarketClosedDays = [
-    "20230101",
-    "20230102",
-    "20230103",
-    "20230109",
-    "20230211",
-    "20230223",
-    "20230321",
-    "20230429",
-    "20230503",
-    "20230504",
-    "20230505",
-    "20230717",
-    "20230811",
-    "20230918",
-    "20230923",
-    "20231009",
-    "20231103",
-    "20231123",
-    "20231231" //（日）	休業日
+    "20240429",
+    "20240503",
+    "20240506",
+    "20240715",
+    "20240812",
+    "20240916",
+    "20240923",
+    "20241014",
+    "20241104",
+    "20241231",
+    "20250101",
+    "20250102",
+    "20250103",
+    "20250113",
+    "20250211",
+    "20250224",
+    "20250320",
+    "20250429",
+    "20250503",
+    "20250505",
+    "20250506",
+    "20250721",
+    "20250811",
+    "20250915",
+    "20250923",
+    "20251013",
+    "20251103",
+    "20251124",
+    "20251231"
 ];
 function IsTokyoStockMarketClosed(date, onlyDate) {
     const d = date ? date : new Date();
@@ -45,7 +55,7 @@ function IsTokyoStockMarketClosed(date, onlyDate) {
         return false;
     if (12 * 60 * 60 + 30 * 60 - 10 * 60 < t && t < 15 * 60 * 60)
         return false;
-    return !onlyDate && true;
+    return !onlyDate;
 }
 exports.IsTokyoStockMarketClosed = IsTokyoStockMarketClosed;
 function getExpireDate(op) {
