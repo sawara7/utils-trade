@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUnrealizedPL = void 0;
+exports.getUnrealizedPL = getUnrealizedPL;
 function getUnrealizedPL(openSide, ticker, openPrice, openSize) {
     let unrealized = 0;
     if (openSide === "buy") {
@@ -11,4 +11,3 @@ function getUnrealizedPL(openSide, ticker, openPrice, openSize) {
     }
     return unrealized;
 }
-exports.getUnrealizedPL = getUnrealizedPL;

@@ -3,7 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getExpireDate = exports.IsTokyoStockMarketClosed = exports.TokyoStockMarketClosedDays = void 0;
+exports.TokyoStockMarketClosedDays = void 0;
+exports.IsTokyoStockMarketClosed = IsTokyoStockMarketClosed;
+exports.getExpireDate = getExpireDate;
 const moment_timezone_1 = __importDefault(require("moment-timezone"));
 require("moment/locale/ja");
 exports.TokyoStockMarketClosedDays = [
@@ -57,7 +59,6 @@ function IsTokyoStockMarketClosed(date, onlyDate) {
         return false;
     return !onlyDate;
 }
-exports.IsTokyoStockMarketClosed = IsTokyoStockMarketClosed;
 function getExpireDate(op) {
     const d = op && op.date ? op.date : new Date();
     d.setDate(d.getDate() + (op && op.expire ? op.expire : 7));
@@ -70,4 +71,3 @@ function getExpireDate(op) {
     const ymd = String(yyyy) + String(mm) + String(dd);
     return parseInt(ymd);
 }
-exports.getExpireDate = getExpireDate;

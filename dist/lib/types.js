@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDefaultTicker = exports.MarketTypeList = exports.OrderTypeList = exports.getListByOrderSide = exports.getCloseSide = exports.OrderSideList = exports.TickerTypeList = void 0;
+exports.MarketTypeList = exports.OrderTypeList = exports.OrderSideList = exports.TickerTypeList = void 0;
+exports.getCloseSide = getCloseSide;
+exports.getListByOrderSide = getListByOrderSide;
+exports.getDefaultTicker = getDefaultTicker;
 exports.TickerTypeList = [
     "ask",
     "bid"
@@ -12,7 +15,6 @@ exports.OrderSideList = [
 function getCloseSide(openSide) {
     return openSide === "buy" ? "sell" : "buy";
 }
-exports.getCloseSide = getCloseSide;
 function getListByOrderSide(value) {
     const res = {};
     for (const s of exports.OrderSideList) {
@@ -20,7 +22,6 @@ function getListByOrderSide(value) {
     }
     return res;
 }
-exports.getListByOrderSide = getListByOrderSide;
 exports.OrderTypeList = [
     "limit",
     "market"
@@ -36,4 +37,3 @@ function getDefaultTicker() {
         timeStamp: 0
     };
 }
-exports.getDefaultTicker = getDefaultTicker;

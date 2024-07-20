@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.withinLimitOrderRange = exports.hasExecutedLimitOrder = exports.enabledExecuteLimitOrder = exports.TickerClass = void 0;
+exports.TickerClass = void 0;
+exports.enabledExecuteLimitOrder = enabledExecuteLimitOrder;
+exports.hasExecutedLimitOrder = hasExecutedLimitOrder;
+exports.withinLimitOrderRange = withinLimitOrderRange;
 const utils_general_1 = require("utils-general");
 class TickerClass extends utils_general_1.BaseObjectClass {
     constructor(intervalSec, sequenceNum) {
@@ -27,12 +30,10 @@ exports.TickerClass = TickerClass;
 function enabledExecuteLimitOrder(orderSide, orderPrice, ticker) {
     return ((orderSide === "buy" && orderPrice <= ticker.bid) || (orderSide === "sell" && orderPrice >= ticker.ask));
 }
-exports.enabledExecuteLimitOrder = enabledExecuteLimitOrder;
 // その値段の指値は約定済みか
 function hasExecutedLimitOrder(orderSide, orderPrice, ticker) {
     return ((orderSide === "buy" && orderPrice > ticker.bid) || (orderSide === "sell" && orderPrice < ticker.ask));
 }
-exports.hasExecutedLimitOrder = hasExecutedLimitOrder;
 // その値段は指値範囲内か
 function withinLimitOrderRange(orderSide, orderPrice, ticker, rangeRate) {
     if (rangeRate < 0 || rangeRate > 1) {
@@ -49,4 +50,3 @@ function withinLimitOrderRange(orderSide, orderPrice, ticker, rangeRate) {
     }
     return false;
 }
-exports.withinLimitOrderRange = withinLimitOrderRange;
