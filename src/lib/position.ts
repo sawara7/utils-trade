@@ -1,5 +1,5 @@
 import { BaseObjectClass } from "utils-general"
-import { BaseOrderClass, BaseOrderVariables, hasExecutedLimitOrder, Order, Ticker } from ".."
+import { BaseOrderClass, BaseOrderVariables, getDefaultTicker, hasExecutedLimitOrder, Order, Ticker } from ".."
 import { PositionStateClass, PositionStateVariables } from "./positionState"
 
 export interface BasePositionParameters {
@@ -64,11 +64,7 @@ export abstract class BasePositionClass extends BaseObjectClass {
     protected _enabledOrderUpdate: boolean = false
     protected _positionState: PositionStateClass
 
-    private _ticker: Ticker = {
-        bid: 0,
-        ask: 0,
-        timeStamp: 0
-    }
+    private _ticker: Ticker = getDefaultTicker()
 
     // Events
     public onOpened?: (pos: BasePositionClass) => void

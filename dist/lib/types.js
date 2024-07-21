@@ -1,9 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MarketTypeList = exports.OrderTypeList = exports.OrderSideList = exports.TickerTypeList = void 0;
+exports.MarketTypeList = exports.OrderTypeList = exports.OrderSideList = exports.TickerTypeList = exports.botExchangeList = exports.botCurrencyList = void 0;
 exports.getCloseSide = getCloseSide;
 exports.getListByOrderSide = getListByOrderSide;
 exports.getDefaultTicker = getDefaultTicker;
+exports.botCurrencyList = [
+    'JPY',
+    'USD'
+];
+exports.botExchangeList = [
+    'none',
+    'bybit',
+    'oanda',
+    'bitbank',
+    'gmo'
+];
 exports.TickerTypeList = [
     "ask",
     "bid"
@@ -34,6 +45,9 @@ function getDefaultTicker() {
     return {
         ask: 0,
         bid: 0,
-        timeStamp: 0
+        timeStamp: 0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     };
 }

@@ -116,7 +116,10 @@ test('Open PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     expect(pos.bestAsk).toBe(101)
     expect(pos.bestBid).toBe(100)
@@ -166,7 +169,10 @@ test('Close PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     await pos.updateOrder({
         orderID: "open1",
@@ -183,7 +189,10 @@ test('Close PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     await pos.updateOrder({
         orderID: "close1",
@@ -223,7 +232,10 @@ test('Cancel PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     await sleep(10)
     await pos.cancel()
@@ -246,7 +258,10 @@ test('Cancel PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     expect(pos.state.isNoOrder).toBe(false)
     await pos.updateOrder({
@@ -268,7 +283,10 @@ test('Cancel PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     await sleep(10)
     await pos.cancel()
@@ -289,7 +307,10 @@ test('Cancel PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     expect(pos.state.isNoOrder).toBe(false)
     await sleep(10)
@@ -339,7 +360,10 @@ test('Losscut PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     await sleep(10)
     await pos.updateOrder({
@@ -358,13 +382,19 @@ test('Losscut PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100,
-        ask: 101
+        ask: 101,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     await sleep(10)
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 98,
-        ask: 99
+        ask: 99,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     await sleep(10)
     await pos.updateOrder({
@@ -383,7 +413,10 @@ test('Losscut PositionClass', async () => {
     await pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     })
     await sleep(10)
     await pos.updateOrder({

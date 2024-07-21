@@ -120,7 +120,10 @@ test('Open PositionClass', () => __awaiter(void 0, void 0, void 0, function* () 
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     expect(pos.bestAsk).toBe(101);
     expect(pos.bestBid).toBe(100);
@@ -168,7 +171,10 @@ test('Close PositionClass', () => __awaiter(void 0, void 0, void 0, function* ()
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     yield pos.updateOrder({
         orderID: "open1",
@@ -185,7 +191,10 @@ test('Close PositionClass', () => __awaiter(void 0, void 0, void 0, function* ()
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     yield pos.updateOrder({
         orderID: "close1",
@@ -224,7 +233,10 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     yield (0, utils_general_1.sleep)(10);
     yield pos.cancel();
@@ -247,7 +259,10 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     expect(pos.state.isNoOrder).toBe(false);
     yield pos.updateOrder({
@@ -269,7 +284,10 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     yield (0, utils_general_1.sleep)(10);
     yield pos.cancel();
@@ -290,7 +308,10 @@ test('Cancel PositionClass', () => __awaiter(void 0, void 0, void 0, function* (
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     expect(pos.state.isNoOrder).toBe(false);
     yield (0, utils_general_1.sleep)(10);
@@ -339,7 +360,10 @@ test('Losscut PositionClass', () => __awaiter(void 0, void 0, void 0, function* 
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     yield (0, utils_general_1.sleep)(10);
     yield pos.updateOrder({
@@ -358,13 +382,19 @@ test('Losscut PositionClass', () => __awaiter(void 0, void 0, void 0, function* 
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100,
-        ask: 101
+        ask: 101,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     yield (0, utils_general_1.sleep)(10);
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 98,
-        ask: 99
+        ask: 99,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     yield (0, utils_general_1.sleep)(10);
     yield pos.updateOrder({
@@ -383,7 +413,10 @@ test('Losscut PositionClass', () => __awaiter(void 0, void 0, void 0, function* 
     yield pos.updateTicker({
         timeStamp: Date.now(),
         bid: 100.0,
-        ask: 101.0
+        ask: 101.0,
+        currency: 'JPY',
+        pair: '',
+        exchange: 'none'
     });
     yield (0, utils_general_1.sleep)(10);
     yield pos.updateOrder({

@@ -1,3 +1,18 @@
+export const botCurrencyList = [
+  'JPY',
+  'USD'
+  ] as const;
+export type botCurrency = typeof botCurrencyList[number]
+
+export const botExchangeList = [
+  'none',
+  'bybit',
+  'oanda',
+  'bitbank',
+  'gmo'
+]
+export type botExchange = typeof botExchangeList[number]
+
 export const TickerTypeList = [
   "ask",
   "bid"
@@ -49,13 +64,19 @@ export interface Ticker {
   timeStamp: number
   bid: number
   ask: number
+  currency: botCurrency
+  pair: string
+  exchange: botExchange
 }
 
 export function getDefaultTicker(): Ticker {
   return {
       ask: 0,
       bid: 0,
-      timeStamp: 0
+      timeStamp: 0,
+      currency: 'JPY',
+      pair: '',
+      exchange: 'none'
   }
 }
 

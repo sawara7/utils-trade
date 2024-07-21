@@ -1,3 +1,7 @@
+export declare const botCurrencyList: readonly ["JPY", "USD"];
+export type botCurrency = typeof botCurrencyList[number];
+export declare const botExchangeList: string[];
+export type botExchange = typeof botExchangeList[number];
 export declare const TickerTypeList: readonly ["ask", "bid"];
 export type TickerType = typeof TickerTypeList[number];
 export declare const OrderSideList: readonly ["buy", "sell"];
@@ -23,6 +27,9 @@ export interface Ticker {
     timeStamp: number;
     bid: number;
     ask: number;
+    currency: botCurrency;
+    pair: string;
+    exchange: botExchange;
 }
 export declare function getDefaultTicker(): Ticker;
 export interface Order {

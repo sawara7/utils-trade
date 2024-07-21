@@ -28,11 +28,7 @@ class BasePositionClass extends utils_general_1.BaseObjectClass {
         this._openPrice = 0;
         this._closePrice = 0;
         this._enabledOrderUpdate = false;
-        this._ticker = {
-            bid: 0,
-            ask: 0,
-            timeStamp: 0
-        };
+        this._ticker = (0, __1.getDefaultTicker)();
         this._positionState = new positionState_1.PositionStateClass();
         this._backtestMode = params.backtestMode ? params.backtestMode : false;
         this._enabledOrderUpdate = params.enabledOrderUpdate;
