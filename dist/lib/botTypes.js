@@ -18,7 +18,8 @@ function getBaseBotStatus() {
         isExit: false,
         message: '-',
         startDate: Date.now(),
-        lastDate: Date.now()
+        lastDate: Date.now(),
+        dbName: ''
     };
 }
 function getTickerPath(key) {

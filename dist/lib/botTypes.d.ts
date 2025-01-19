@@ -13,6 +13,7 @@ export interface BaseBotStatus {
     message: string;
     startDate: number;
     lastDate: number;
+    dbName: string;
 }
 export declare function getBaseBotStatus(): BaseBotStatus;
 export declare function getTickerPath(key: string): string;
