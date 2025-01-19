@@ -3,8 +3,8 @@
   "version": "0.0.6",
   "main": "dist/index.js",
   "scripts": {
-    "build": "ncu -u && npm install && npm update && tsc",
-    "commit": "git commit -am 'commit' && npm version patch && git push",
+    "build": "ncu -u && pnpm install && pnpm update && tsc",
+    "commit": "git commit -am 'commit' && pnpm version patch && git push",
     "test": "jest"
   },
   "jest": {

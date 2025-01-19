@@ -15,6 +15,7 @@ export interface BaseBotStatus {
     message: string
     startDate: number
     lastDate: number
+    dbName: string
 }
 
 export function getBaseBotStatus(): BaseBotStatus {
@@ -25,7 +26,8 @@ export function getBaseBotStatus(): BaseBotStatus {
         isExit: false,
         message: '-',
         startDate: Date.now(),
-        lastDate: Date.now()
+        lastDate: Date.now(),
+        dbName: ''
     }
 }
 
