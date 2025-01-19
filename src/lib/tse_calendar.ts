@@ -66,9 +66,9 @@ export function getExpireDate(op?: getExpireDateOption): number {
     while(IsTokyoStockMarketClosed(d, true)) {
         d.setDate(d.getDate() - 1)
     }
-    var yyyy = d.getFullYear();
-    var mm = ('00' + (d.getMonth()+1)).slice(-2);
-    var dd = ('00' + (d.getDate())).slice(-2);
+    const yyyy = d.getFullYear();
+    const mm = ('00' + (d.getMonth()+1)).slice(-2);
+    const dd = ('00' + (d.getDate())).slice(-2);
     const ymd = String(yyyy) + String(mm) + String(dd);
     return parseInt(ymd);
   }
