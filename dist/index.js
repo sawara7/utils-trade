@@ -17,3 +17,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./lib/types"), exports);
 __exportStar(require("./lib/tse_calendar"), exports);
 __exportStar(require("./lib/utils"), exports);
+__exportStar(require("./lib/botTypes"), exports);
