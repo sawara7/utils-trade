@@ -1,4 +1,4 @@
-export interface BotStatus {
+export interface BotStatusForAPP {
     name: string;
     cpl: number;
     upl: number;
@@ -6,4 +6,4 @@ export interface BotStatus {
     latest: string;
     running: boolean;
 }
-export declare const getDefaultBotStatus: () => BotStatus;
+export declare const getDefaultBotStatus: () => BotStatusForAPP;
