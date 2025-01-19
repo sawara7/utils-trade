@@ -1,4 +1,4 @@
-export interface BotStatus {
+export interface BotStatusForAPP {
     name: string
     cpl: number
     upl: number
@@ -7,7 +7,7 @@ export interface BotStatus {
     running: boolean
   }
   
-export const getDefaultBotStatus = (): BotStatus => {
+export const getDefaultBotStatus = (): BotStatusForAPP => {
     return {
         name: '',
         cpl: 0,
